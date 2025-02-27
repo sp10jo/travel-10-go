@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 const EditProfile = () => {
   const [nickname, setNickname] = useState('닉네임');
@@ -33,19 +35,19 @@ const EditProfile = () => {
       </div>
 
       {/* 닉네임 수정 */}
-      <input
+      <Input
         type="text"
         value={nickname}
         onChange={(e) => {
           setNickname(e.target.value);
         }}
-        className="border px-4 py-2 rounded-lg w-64 text-center"
+        className="w-64 text-center"
       />
 
       {/* 저장 버튼 */}
-      <button onClick={handleSave} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg">
+      <Button onClick={handleSave} className="mt-4 bg-green-500 text-white">
         수정하기
-      </button>
+      </Button>
     </div>
   );
 };
