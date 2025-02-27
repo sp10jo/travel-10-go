@@ -1,16 +1,15 @@
 import Button from './common/Button';
 
-const RegionCard = ({ region, onClick, className = '' }) => {
+const RegionCard1 = ({ region, onClick, className = '' }) => {
   return (
-    <div
-      className={`flex flex-col items-center justify-center p-4 w-full
-                  bg-white rounded-md shadow-sm ${className}`}
+    <Button
+      onClick={onClick}
+      className={`p-4 w-[200px] h-[200px]
+                bg-gray-200 rounded-md shadow-sm ${className}`}
     >
-      <Button onClick={onClick} className="px-4 py-2 bg-black rounded-full text-white">
-        {region}
-      </Button>
-    </div>
+      <div className="px-4 py-2 bg-black rounded-full text-white">{region}</div>
+    </Button>
   );
 };
 
-export default RegionCard;
+export default RegionCard1;
