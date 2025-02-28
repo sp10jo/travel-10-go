@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getReviewsByPlaceId, getReviewsByUserId } from '../api/supabaseReviewsAPI';
+import { getReviewsByPlaceId, getReviewsByUserId } from '../../api/supabaseReviewsAPI';
 
 //place_id를 기준으로 리뷰 데이터들을 가져옵니다.
 export const useReviewsByPlaceIdQuery = (placeId) => {

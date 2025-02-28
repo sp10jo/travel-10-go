@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useReviewsByPlaceIdQuery } from '../hooks/useReviewsQuery';
+import { useReviewsByPlaceIdQuery } from '../hooks/tanstack/useReviewsQuery';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
