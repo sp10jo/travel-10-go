@@ -8,28 +8,26 @@ import { useEffect } from 'react';
 const Login = () => {
   const { loginUserBySupabase, logoutUser } = useUser();
   const navigate = useNavigate();
-  const { user, isLogin, token } = useAuthStore();
+  const isLogin = useAuthStore((s) => s.isLogin);
 
   useEffect(() => {
     if (isLogin) {
-      // navigate('/');
-      console.log('로그인 상태입니다');
-      console.log(user, token);
+      navigate('/');
     }
-  }, [isLogin, token, user]);
+  }, [navigate, isLogin]);
 
   const handleLoginClick = async (e) => {
     e.preventDefault();
     const res = await loginUserBySupabase(e);
     if (res) {
-      // navigate('/');
+      navigate('/');
     }
   };
 
   const handleLogOutClick = async () => {
     const res = await logoutUser();
     if (res) {
-      // navigate('/');
+      navigate('/');
     }
   };
   return (
