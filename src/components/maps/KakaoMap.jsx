@@ -8,6 +8,7 @@ const KakaoMap = ({ region, markers }) => {
   const ZOOM_LEVEL = 3;
 
   const [map, setMap] = useState(null);
+  const [info, setInfo] = useState();
 
   useEffect(() => {
     if (!map || markers.length === 0) return;
@@ -30,8 +31,8 @@ const KakaoMap = ({ region, markers }) => {
         onCreate={setMap}
       >
         {markers.map((marker, index) => (
-          <MapMarker key={index} position={marker.position}>
-            <div style={{ color: '#000' }}>{marker.content}</div>
+          <MapMarker key={index} position={marker.position} onClick={() => setInfo(marker)}>
+            {info && info.content === marker.content && <div style={{ color: '#000' }}>{marker.content}</div>}
           </MapMarker>
         ))}
         <ZoomControl position={'RIGHT'} />
