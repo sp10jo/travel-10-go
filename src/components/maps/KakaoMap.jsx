@@ -9,21 +9,23 @@ const KakaoMap = ({ region, markers }) => {
   const LONGITUDE = 126.570667;
   const ZOOM_LEVEL = 3;
   const MARKER_OFFSET_Y = 1.5;
+  const MARKER_SIZE = 28;
 
   const [map, setMap] = useState(null);
   const [info, setInfo] = useState(null);
   const [markerImage, setMarkerImage] = useState(null);
 
+  // Favicon 아이콘을 svg 문자열로 변환해 DataURL로 만들어 이미지로 사용
   useEffect(() => {
-    const svgString = ReactDOMServer.renderToString(<FaMapMarkerAlt size={24} color="#E03131" />);
+    const svgString = ReactDOMServer.renderToString(<FaMapMarkerAlt size={MARKER_SIZE} color="" />);
 
     const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
 
     setMarkerImage({
       src: dataUrl,
       size: {
-        width: 24,
-        height: 24,
+        width: MARKER_SIZE,
+        height: MARKER_SIZE,
       },
     });
   }, []);
