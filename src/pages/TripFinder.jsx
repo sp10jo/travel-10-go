@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ReviewViewer from '../components/ReviewViewer';
 import KakaoMap from '../components/maps/KakaoMap';
+import Youtube from '../components/Youtube';
 
 const TripFinder = () => {
   const [openReviewViewer, setOpenReviewViewer] = useState(false);
@@ -14,7 +15,9 @@ const TripFinder = () => {
       </div>
 
       {/* 하단 1/3 영역에 Youtube 배치 */}
-      <div className="flex-[1]"></div>
+      <div className="flex-[1] mx-20">
+        <Youtube />
+      </div>
 
       {openReviewViewer && <ReviewViewer placeId={placeId} setOpenReviewViewer={setOpenReviewViewer} />}
     </div>
