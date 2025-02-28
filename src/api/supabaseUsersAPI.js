@@ -2,7 +2,32 @@ import supabase from '../supabase/client';
 
 export const getUsers = async () => {};
 
-export const login = async () => {};
+export const login = async ({ id, password }) => {
+  // 로그인
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+    email: id,
+    password,
+  });
+
+  if (loginError) {
+    return { user: null, error: loginError };
+  }
+
+  const { data: loginUserData, error: loginUserError } = await getUserByUUID(loginData.user.id);
+  return { error: null, loginUserData, loginUserError };
+};
+
+export const getUserByUUID = async (uuid) => {
+  const res = await supabase.from('users').select('*').eq('id', uuid).maybeSingle();
+
+  return res;
+};
+
+export const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+
+  return { error };
+};
 
 export const registerUser = async ({ email, id, password, nickname, profile_img }) => {
   // 회원 가입
@@ -31,8 +56,6 @@ export const registerUser = async ({ email, id, password, nickname, profile_img 
 
   return { user: insertData, error: null };
 };
-
-export const logout = async () => {};
 
 export const uploadProfileImage = async (img) => {
   const data = await supabase.storage.from('profile-img').upload(`${Date.now()}${img.name}`, img);

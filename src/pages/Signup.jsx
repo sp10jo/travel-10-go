@@ -7,12 +7,12 @@ const Signup = () => {
   const { registerUserBySupabase, isUserIdExists, isUserNickNameExists } = useUser();
   const [isIdExists, setIsIdExists] = useState(false);
   const [isNickNameExists, setIsNickNameExists] = useState(false);
-  const nv = useNavigate();
+  const navigate = useNavigate();
 
   const handleRegisterClick = async (e) => {
     e.preventDefault();
 
-    if (!(isIdExists || isNickNameExists)) {
+    if (!isIdExists || !isNickNameExists) {
       alert('중복확인을 해주세요');
       return;
     }
@@ -20,7 +20,7 @@ const Signup = () => {
     const isSucsess = await registerUserBySupabase(e);
 
     if (isSucsess) {
-      // nv('/login');
+      navigate('/login');
     }
   };
 
