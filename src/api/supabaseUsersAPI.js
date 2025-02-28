@@ -74,6 +74,10 @@ export const getUserByNickName = async (nickname) => {
   return { data, error };
 };
 
-export const updateUser = async () => {};
+export const updateUser = async (id, updatedData) => {
+  const { error } = await supabase.from('users').update(updatedData).eq('id', id);
+
+  return { error };
+};
 
 export const deleteUser = async () => {};
