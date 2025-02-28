@@ -6,7 +6,7 @@ const MyReview = () => {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    // TODO: Supabase에서 데이터 가져오는 API 연결
+    // TODO: Supabase에서 데이터 가져오는 API 연결 예정
     const fetchReviews = async () => {
       const mockReviews = [
         { id: 1, username: '닉네임1', content: '첫 번째 리뷰입니다.' },
