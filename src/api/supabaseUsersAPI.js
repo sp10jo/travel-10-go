@@ -12,9 +12,8 @@ export const login = async ({ id, password }) => {
   if (loginError) {
     return { user: null, error: loginError };
   }
-
-  const { data: loginUserData, error: loginUserError } = await getUserByUUID(loginData.user.id);
-  return { error: null, loginUserData, loginUserError };
+  const { error: loginUserError } = await getUserByUUID(loginData.user.id);
+  return { error: null, loginUserError };
 };
 
 export const getUserByUUID = async (uuid) => {

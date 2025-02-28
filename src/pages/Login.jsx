@@ -3,27 +3,33 @@ import Button from '../components/common/Button';
 import useUser from '../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../zustand/authStore';
+import { useEffect } from 'react';
 
 const Login = () => {
   const { loginUserBySupabase, logoutUser } = useUser();
   const navigate = useNavigate();
-  const { isLogin } = useAuthStore();
-  if (isLogin) {
-    alert('이미 로그인되어 있습니다');
-    navigate('/');
-  }
+  const { user, isLogin, token } = useAuthStore();
+
+  useEffect(() => {
+    if (isLogin) {
+      // navigate('/');
+      console.log('로그인 상태입니다');
+      console.log(user, token);
+    }
+  }, [isLogin, token, user]);
+
   const handleLoginClick = async (e) => {
     e.preventDefault();
     const res = await loginUserBySupabase(e);
     if (res) {
-      navigate('/');
+      // navigate('/');
     }
   };
 
   const handleLogOutClick = async () => {
     const res = await logoutUser();
     if (res) {
-      navigate('/');
+      // navigate('/');
     }
   };
   return (
