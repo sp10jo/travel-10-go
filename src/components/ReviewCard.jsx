@@ -1,7 +1,20 @@
 import Avatar from './common/Avatar';
 import Button from './common/Button';
 
-const ReviewCard = ({ username, avatarSrc, content, footerText, onEditClick, onDeleteClick, className = '' }) => {
+const ReviewCard = ({ review, className }) => {
+  //리뷰에 담겨있는 정보를 뽑아서 저장합니다
+  const avatarSrc = review.users.profile_img_path;
+  const username = review.users.nickname;
+  const content = `${review.content}`;
+  const footerText = `${review.places.place_name} :: ${review.places.place_address}`;
+
+  //리뷰하나당 여러개의 사진이 있을 수 있으니 배열로 저장합니다.
+  const imgArr = review.imgs;
+
+  const onEditClick = () => {};
+
+  const onDeleteClick = () => {};
+
   return (
     <div className={`bg-gray-200 rounded-md shadow-sm overflow-hidden ${className}`}>
       <div className="flex items-center justify-between p-3 bg-white">
@@ -18,7 +31,12 @@ const ReviewCard = ({ username, avatarSrc, content, footerText, onEditClick, onD
           </Button>
         </div>
       </div>
-
+      <div>
+        {imgArr.map((path) => {
+          console.log(path);
+          return <img src={path.img_path} key={path.id + review.id} className="w-[50px] h-[50px]"></img>;
+        })}
+      </div>
       <div className="p-4">
         <p className="text-sm break-words">{content}</p>
       </div>
