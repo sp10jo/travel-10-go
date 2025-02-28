@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useReviewsByPlaceIdQuery } from '../hooks/tanstack/useReviewsQuery';
+import ReviewCard from './ReviewCard';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
@@ -27,7 +28,7 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   }
 
   if (isError) {
-    return <div>에러가발생했습니다</div>;
+    return <div>에러가발생했습니다 :: {error}</div>;
   }
 
   //reviews : 카드를 표시할때 사용할 리뷰데이터들 입니다.
@@ -51,6 +52,9 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
           }}
         >
           {/* 리뷰 카드가 들어올 부분입니다. */}
+          {reviews.map((review) => {
+            return <ReviewCard key={review.id} review={review} />;
+          })}
         </aside>
       </section>
     </>

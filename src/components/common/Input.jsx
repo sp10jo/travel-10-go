@@ -1,4 +1,10 @@
-const Input = ({ type = 'text', placeholder = '', value, onChange, className = '' }) => (
+// const Input = ({ type = 'text', placeholder = '', value, onChange, className = '' }) => (
+const Input = ({
+  type = 'text',
+  placeholder = '',
+  value,
+  onChange /*, isError, errorMsg, label, labelPosition, withPasswordIcon*/,
+}) => (
   <input
     type={type}
     placeholder={placeholder}
