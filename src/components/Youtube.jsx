@@ -35,7 +35,7 @@ const Youtube = () => {
     <div className="p-4">
       <div className="flex flex-row gap-4">
         {videos.length === 0 ? (
-          <h1>📣영상을 로딩하는 중에 오류가 났습니다..!</h1>
+          <h3>📣영상을 불러오는 중일 가능성이 높습니다. 1분 이상 지속 시 오류!</h3>
         ) : (
           //영상 링크 형태: https://www.youtube.com/embed/ + videoId
           videos.map((video) => (
