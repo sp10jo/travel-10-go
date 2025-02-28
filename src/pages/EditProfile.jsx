@@ -1,49 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import useAuthStore from '../zustand/authStore';
 import { getUserByUUID, updateUser, uploadProfileImage } from '../api/supabaseUsersAPI';
+import { useQuery } from '@tanstack/react-query';
 
 const EditProfile = () => {
   const { user } = useAuthStore();
-  const [nickname, setNickname] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
   const [newProfileImage, setNewProfileImage] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user) return;
-      const { data, error } = await getUserByUUID(user.id);
-      if (error) {
-        alert('유저 정보를 불러오는 데 실패했습니다.');
-        return;
-      }
-      setNickname(data.nickname);
-      setProfileImage(data.profile_img_path);
-    };
+  const {
+    data: userData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['user', user?.id],
+    queryFn: () => getUserByUUID(user.id),
+    enabled: !!user?.id,
+  });
 
-    fetchUserData();
-  }, [user]);
+  if (!user) {
+    return <div>로딩 중...</div>;
+  }
+  if (isLoading) return <div>유저 정보를 불러오는 중...</div>;
+  if (error) return <div>유저 정보를 가져오는 데 실패했습니다.</div>;
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setNewProfileImage(file);
-      setProfileImage(URL.createObjectURL(file));
     }
   };
 
   const handleSaveProfile = async () => {
     if (!user) return;
 
-    let uploadedImagePath = profileImage;
+    let uploadedImagePath = userData.profile_img_path || 'default-avatar.png';
     if (newProfileImage) {
       const { data } = await uploadProfileImage(newProfileImage);
       uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${data.path}`;
     }
 
     const updatedUserData = {
-      nickname,
+      nickname: user.nickname,
       profile_img_path: uploadedImagePath,
     };
 
@@ -64,7 +63,7 @@ const EditProfile = () => {
       <div className="mb-4">
         <label className="cursor-pointer">
           <img
-            src={profileImage || '/default-avatar.png'}
+            src={user.profile_img_path || '/default-avatar.png'}
             alt="프로필 이미지"
             className="w-24 h-24 rounded-full object-cover border"
           />
@@ -73,7 +72,7 @@ const EditProfile = () => {
       </div>
 
       {/* 닉네임 수정 */}
-      <Input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} className="w-64 text-center" />
+      <Input type="text" value={user.nickname || ''} readOnly className="w-64 text-center" />
 
       {/* 저장 버튼 */}
       <Button onClick={handleSaveProfile} className="mt-4 bg-green-500 text-white">

@@ -5,16 +5,7 @@ import useAuthStore from '../zustand/authStore';
 import { getReviewsByUserId } from '../api/supabaseReviewsAPI';
 
 const MyReview = () => {
-  // const user = useAuthStore(s => s.user);
-
-  // const {a, b} = useAbcStore(function (s) {
-  //   return {
-  //     a: s.a,
-  //     b: s.b
-  //   }
-  // })
-
-  const { user } = useAuthStore();
+  const user = useAuthStore(s => s.user);
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
