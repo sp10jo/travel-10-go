@@ -3,7 +3,7 @@ import Avatar from '../common/Avatar';
 
 const Header = () => {
   // ===== Test Data (추후 zustand 상태와 연결) =====
-  const isLogin = true;
+  const isLogin = false;
   const user = {
     name: 'test',
     profileImage:
