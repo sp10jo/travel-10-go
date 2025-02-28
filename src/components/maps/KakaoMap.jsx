@@ -41,7 +41,7 @@ const KakaoMap = ({ region, markers }) => {
   }, [map, markers]);
 
   return (
-    <div id="map" style={{ width: '100%', height: '100%' }}>
+    <div className="w-full h-full" id="map">
       <Map
         center={{ lat: LATITUDE, lng: LONGITUDE }}
         style={{ width: '100%', height: '100%' }}
@@ -59,37 +59,10 @@ const KakaoMap = ({ region, markers }) => {
 
         {info && (
           <CustomOverlayMap position={info.position} yAnchor={MARKER_OFFSET_Y}>
-            <div
-              style={{
-                position: 'relative',
-                backgroundColor: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                padding: '10px',
-                paddingRight: '25px', // X 버튼 공간 확보
-                fontSize: '14px',
-                color: '#333',
-                maxWidth: '250px',
-                minWidth: '150px',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-                wordWrap: 'break-word',
-                textAlign: 'center',
-              }}
-            >
+            <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-xs min-w-[150px] shadow-md text-center">
               <div>{info.content}</div>
               <div
-                style={{
-                  position: 'absolute',
-                  top: '5px',
-                  right: '5px',
-                  cursor: 'pointer',
-                  color: '#888',
-                  lineHeight: '1',
-                  height: '16px',
-                  width: '16px',
-                  textAlign: 'center',
-                  zIndex: '1',
-                }}
+                className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center z-10"
                 onClick={(e) => {
                   e.stopPropagation();
                   setInfo(null);
