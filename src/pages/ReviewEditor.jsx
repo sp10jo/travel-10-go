@@ -29,6 +29,12 @@ const ReviewEditor = () => {
   // 등록 버튼 핸들러
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+    const { data, error } = await supabase.auth.getSession();
+    let userId = null;
+    if (data !== null) {
+      userId = data.session.user.id;
+    }
+    console.log(userId);
 
     //안내 메세지
     const isConfirm = window.confirm('등록하시겠습니까?');
@@ -39,9 +45,11 @@ const ReviewEditor = () => {
         // 1. supabase reviews 테이블에 저장하는 로직
         const { data, error } = await supabase
           .from('reviews')
-          .insert({ content, star, user_id: null, place_id: null })
+          .insert([{ content, star, user_id: userId, place_id: null }])
           .select()
           .single();
+
+        if (error) throw console.log(error);
         if (error) throw error;
 
         // 2. 이미지가 있다면 supabase 스토리지에 업로드 하는 로직
@@ -51,19 +59,20 @@ const ReviewEditor = () => {
 
           //이미지 파일 경로
           const filePath = `public/${uniqueImageName}`;
-
+          // https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/review-img/public/067141db-11da-481a-a426-8d502c6d2888.webp
+          const imgPath = 'https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/' + filePath;
           //이미지 업로드
           const { error: uploadError } = await supabase.storage.from('review-img').upload(filePath, reviewImg);
 
           if (uploadError) throw uploadError;
 
           //스토리지에 저장된 이미지 주소 가져오기
-          const { data: reviewPublicUrl } = supabase.storage.from('review-img').getPublicUrl(filePath);
+          // const { data: reviewPublicUrl } = supabase.storage.from('review-img').getPublicUrl(filePath);
 
           // 3. 스토리지에 업로드 된 이미지의 주소를 가져와서 review_img_path 테이블에 img_path 에 저장하기
           const { error: imgPathError } = await supabase.from('reviews_img_path').insert({
             review_id: data.id, //리뷰글의 아이디
-            img_path: reviewPublicUrl.publicUrl,
+            img_path: imgPath,
           });
 
           if (imgPathError) throw imgPathError;

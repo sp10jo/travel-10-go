@@ -9,8 +9,8 @@ const Login = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuthStore();
   if (isLogin) {
-    alert('이미 로그인되어 있습니다');
-    navigate('/');
+    // alert('이미 로그인되어 있습니다');
+    // navigate('/');
   }
   const handleLoginClick = async (e) => {
     e.preventDefault();
