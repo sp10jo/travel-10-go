@@ -36,12 +36,13 @@ const ReviewEditor = () => {
     // 수파베이스에 저장하는 로직
     if (isConfirm) {
       try {
-        //-------------[TEST_off : 이미지 패스 없는 원래 로직]------------------
         // 1. supabase reviews 테이블에 저장하는 로직
-        // const { data, error } = await supabase.from('reviews').insert({ content, star, user_id : null, place_id : null }).select().single();
-        // console.log('리뷰데이터 ==>', data);
-        // if (error) throw error;
-        //-----------------------------------------------------------------
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert({ content, star, user_id: null, place_id: null })
+          .select()
+          .single();
+        if (error) throw error;
 
         // 2. 이미지가 있다면 supabase 스토리지에 업로드 하는 로직
         if (reviewImg) {
@@ -50,7 +51,6 @@ const ReviewEditor = () => {
 
           //이미지 파일 경로
           const filePath = `public/${uniqueImageName}`;
-          console.log('파일 경로 ==>', filePath);
 
           //이미지 업로드
           const { error: uploadError } = await supabase.storage.from('review-img').upload(filePath, reviewImg);
@@ -60,32 +60,13 @@ const ReviewEditor = () => {
           //스토리지에 저장된 이미지 주소 가져오기
           const { data: reviewPublicUrl } = supabase.storage.from('review-img').getPublicUrl(filePath);
 
-          console.log('reviewPublicUrl 주소 ==>', reviewPublicUrl.publicUrl);
-
-          //-------------[TEST_off : 이미지 패스 저장 로직 수정중]------------------
           // 3. 스토리지에 업로드 된 이미지의 주소를 가져와서 review_img_path 테이블에 img_path 에 저장하기
-          // const { error: imgPathError } = await supabase.from('review_img_path').insert({
-          //   review_id: data.id, //리뷰글의 아이디
-          //   img_path: reviewPublicUrl.publicUrl,
-          // });
+          const { error: imgPathError } = await supabase.from('reviews_img_path').insert({
+            review_id: data.id, //리뷰글의 아이디
+            img_path: reviewPublicUrl.publicUrl,
+          });
 
-          // console.log('해당 리뷰글의 id ==>', data.id);
-          // console.log('저장할 이미지 주소 ==>', reviewPublicUrl.publicUrl);
-
-          // if (imgPathError) throw imgPathError;
-          //-----------------------------------------------------------------
-
-          //-----------------[TEST_on : 이미지 패스 추가한 저장 로직]----------------
-          // 1번 로직 수정. supabase reviews 테이블에 저장하는 로직
-          const { data, error } = await supabase
-            .from('reviews')
-            .insert({ content, star, test_url: reviewPublicUrl.publicUrl, user_id: null, place_id: null })
-            // (test_url 컬럼 추가로 임시 확인중)
-            .select()
-            .single();
-          console.log('리뷰데이터 ==>', data);
-          if (error) throw error;
-          //-----------------------------------------------------------------
+          if (imgPathError) throw imgPathError;
         }
       } catch (error) {
         console.error('수파베이스 데이터 입력 에러:', error);
