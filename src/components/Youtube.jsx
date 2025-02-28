@@ -1,29 +1,26 @@
 import axios from 'axios';
-import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
-const key = 'AIzaSyD06auha20lnXQsMPJjUsAlpH3uGo38UNY';
-
+import { useState, useEffect } from 'react';
 const Youtube = () => {
+  //받아오는 비디오 값입니다.
   const [videos, setVideos] = useState([]);
 
+  // 처음 이동할 때 값 가져오도록 하기
+  // 후에 검색 값을 state로 둬서 해당 값이 바뀌면 의존성을 줘서 다시 불러올 수 있게 하려합니다.
   useEffect(() => {
     const handleVideo = async () => {
       try {
-        //axios를 통한 api 연결
-        //검색은 get ()
-        //v3 api사용 https://www.googleapis.com/youtube/v3 요게 주소! 전에
-        // 제공해주신 nbcamp? 같은 서버 느낌
-        // /search 이 친구가 login 같은 api에서 제공하는 검색 느낌!
-        //저희는 검색 밖에 없으니까 일단 나누지 않겠습니다
-
+        //api 참고:
+        // 1. 검색은 get ()
+        // 2. API 중 v3 api사용 주소: https://www.googleapis.com/youtube/v3
+        // 3. 검색을 위해 api에서 제공하는 /search 사용
+        // 검색만 진행하니 주소를 따로 빼지 않았습니다.
         const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
           params: {
             part: 'snippet', //snippet을 설정하는 경우 API 응답은 하위 속성도 모두 포함
             maxResults: 3, // 상위 3개 영상 가져오기
-            q: '서울 관광지', // 검색어
-            type: 'video', // 영상만 필터링
-            key: key,
+            q: '서울 관광지', // 검색어 << 후에 수정할 내용용
+            type: 'video', // 영상만 가져옴옴
+            key: import.meta.env.VITE_APP_YOUTUBE_KEY, //다들 env 키 추가하셔요!
           },
         });
         setVideos(response.data.items);
@@ -34,31 +31,21 @@ const Youtube = () => {
     handleVideo();
   }, []);
 
-  /* 
-  이렇게 바로 받아오면 오류나더라...
-  await 인데 handleVideo()가 Promise(비동기 함수)인데, videos.map()을 바로 호출해서 handleVideo()는 비동기 함수(async function)라서 즉시 데이터를 반환하는 게 아니라 
-  Promise 객체를 반환... videos.map()을 하려고 하니까, videos가 배열이 아니라 Promise라서 에러남.. >>useEffect 로 페이지 로딩 될 때마다 값 계산해서 적용하는 게 좋을 듯?
-
-  근데 나 response.data.items; 이렇게 받아온 거면 값 받아온 거 맞지 않냐
-  const videos =  handleVideo(); */
   return (
-    <div>
-      Youtube
-      <div>
+    <div className="p-4">
+      <div className="flex flex-row gap-4">
         {videos.length === 0 ? (
-          <div>불러오는데 오류났음!길이가 0!</div>
+          <h1>📣영상을 로딩하는 중에 오류가 났습니다..!</h1>
         ) : (
-          //들어오는 형태: [ { id: { videoId: "123" }, snippet: { title: "제목..", thumbnails: { medium: { url: "썸네일 사진 같아용.jpg" } } } },]
           //영상 링크 형태: https://www.youtube.com/embed/ + videoId
           videos.map((video) => (
-            <div key={video.id.videoId}>
-              <h2>{video.snippet.title}</h2>
+            <div key={video.id.videoId} className="w-full aspect-video mt-2 rounded-lg shadow-md overflow-hidden">
               <iframe
-                width="500"
-                height="300"
+                className="w-full h-full"
                 src={`https://www.youtube.com/embed/${video.id.videoId}`}
                 allowFullScreen
               ></iframe>
+              <span>{video.snippet.title}</span>
             </div>
           ))
         )}
