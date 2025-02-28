@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import useRegionStore from '../zustand/regionStore';
 
 const RegionCard = ({ region, onClick, className = '' }) => {
   const isLogin = true;
@@ -22,6 +23,7 @@ const RegionCard = ({ region, onClick, className = '' }) => {
     제주특별자치도: '/home/default.jpg',
   };
 
+  const setSelectedRegion = useRegionStore((state) => state.setSelectedRegion);
   return (
     <Link
       to={isLogin ? `/trip-finder` : `/login`}
@@ -31,6 +33,9 @@ const RegionCard = ({ region, onClick, className = '' }) => {
         backgroundImage: `url(${regionImages[region]})`, // 배경 이미지 설정
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+      }}
+      onClick={() => {
+        setSelectedRegion(region);
       }}
     >
       {/* 검정색 오버레이 (기본 투명, hover 시 불투명) */}
