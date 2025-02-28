@@ -1,4 +1,5 @@
-import { getUserById, getUserByNickName, registerUser } from '../api/supabaseUsersAPI';
+import { getUserById, getUserByNickName, login, logout, registerUser } from '../api/supabaseUsersAPI';
+import useAuthStore from '../zustand/authStore';
 
 const useUser = () => {
   const registerUserBySupabase = async (e) => {
@@ -69,8 +70,40 @@ const useUser = () => {
     alert('사용 가능한 닉네임입니다');
     return true;
   };
+  const loginUserBySupabase = async (e) => {
+    const id = e.target.id.value;
+    const password = e.target.password.value;
 
-  return { registerUserBySupabase, isUserIdExists, isUserNickNameExists };
+    if (!id || !password) {
+      alert('모든 항목을 입력해주세요');
+      return false;
+    }
+
+    const { loginUserData, error } = await login({ id, password });
+
+    if (error) {
+      alert('로그인에 실패했습니다 : ' + error.message);
+      return false;
+    }
+    useAuthStore.getState().setLogin(loginUserData);
+    alert('로그인에 성공했습니다');
+    return true;
+  };
+
+  const logoutUser = async () => {
+    const { error } = await logout();
+
+    if (error) {
+      alert('로그아웃에 실패했습니다 : ' + error.message);
+      return false;
+    }
+    useAuthStore.getState().setLogout();
+
+    alert('로그아웃에 성공했습니다');
+    return true;
+  };
+
+  return { registerUserBySupabase, isUserIdExists, logoutUser, isUserNickNameExists, loginUserBySupabase };
 };
 
 export default useUser;

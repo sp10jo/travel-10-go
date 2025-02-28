@@ -7,7 +7,7 @@ const Signup = () => {
   const { registerUserBySupabase, isUserIdExists, isUserNickNameExists } = useUser();
   const [isIdExists, setIsIdExists] = useState(false);
   const [isNickNameExists, setIsNickNameExists] = useState(false);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   const handleRegisterClick = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ const Signup = () => {
     const isSucsess = await registerUserBySupabase(e);
 
     if (isSucsess) {
-      navigator('/login');
+      navigate('/login');
     }
   };
 
