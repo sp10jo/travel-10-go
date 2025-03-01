@@ -1,16 +1,22 @@
+import useAuthStore from '../zustand/authStore';
+import Button from '../components/common/Button';
 import { useState } from 'react';
-import supabase from '../supabase/client';
 import { useNavigate } from 'react-router-dom';
-import uuid4 from 'uuid4';
+import { getFilePath } from '../utils/getFilePath';
+import { createReviews, insertImagePathToTable, uploadImages } from '../api/supabaseReviewsAPI';
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
 
-  // [*] useState : 일단 useState로 작업 후 추후 리팩토링 예정
+  //상태관리
   const [content, setContent] = useState('');
   const [star, setStar] = useState('');
   const [reviewImg, setReviewImg] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
+  const { user } = useAuthStore();
+
+  //현재 없는 place_id 정보는 null값으로 지정 (추후 데이터 테이블 연동)
+  const place = null;
 
   // 이미지 변경 함수
   const handleImageFileChange = (e) => {
@@ -26,50 +32,40 @@ const ReviewEditor = () => {
     };
   };
 
-  // 등록 버튼 핸들러
+  // 뒤로가기 버튼 핸들러
+  const handleSendToBackClick = () => {
+    navigate(-1);
+  };
+
+  // 리뷰 등록 폼 핸들러
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
-    //안내 메세지
+    //게시글 등록 확인 컨펌 (취소 false/ 확인 ture)
     const isConfirm = window.confirm('등록하시겠습니까?');
 
-    // 수파베이스에 저장하는 로직
+    // isConfirm true 확인버튼 클릭 시, 수파베이스에 저장하는 로직
     if (isConfirm) {
       try {
-        // 1. supabase reviews 테이블에 저장하는 로직
-        const { data, error } = await supabase
-          .from('reviews')
-          .insert({ content, star, user_id: null, place_id: null })
-          .select()
-          .single();
-        if (error) throw error;
+        // 1. reviews 테이블에 저장하는 로직
+        const reviewData = await createReviews(content, star, user.id, place);
+        const dataId = reviewData.id;
 
-        // 2. 이미지가 있다면 supabase 스토리지에 업로드 하는 로직
+        // 2 reviews_img_path 테이블에 저장하는 로직
+        // [2-1] 리뷰 작성 시 업로드된 이미지의 스토리지 주소 얻기
         if (reviewImg) {
-          const imageExt = reviewImg.name.split('.').pop(); //확장자 추출
-          const uniqueImageName = `${uuid4()}.${imageExt}`; // uuid + 원래 확장자
+          const filePath = getFilePath(reviewImg);
+          const uploadFilePath = `https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/review${filePath}`;
 
-          //이미지 파일 경로
-          const filePath = `public/${uniqueImageName}`;
+          // [2-2] 얻은 이미지 주소로 스토리지에 업로드
+          uploadImages(filePath, reviewImg);
 
-          //이미지 업로드
-          const { error: uploadError } = await supabase.storage.from('review-img').upload(filePath, reviewImg);
-
-          if (uploadError) throw uploadError;
-
-          //스토리지에 저장된 이미지 주소 가져오기
-          const { data: reviewPublicUrl } = supabase.storage.from('review-img').getPublicUrl(filePath);
-
-          // 3. 스토리지에 업로드 된 이미지의 주소를 가져와서 review_img_path 테이블에 img_path 에 저장하기
-          const { error: imgPathError } = await supabase.from('reviews_img_path').insert({
-            review_id: data.id, //리뷰글의 아이디
-            img_path: reviewPublicUrl.publicUrl,
-          });
-
-          if (imgPathError) throw imgPathError;
+          // [2-3] 스토리지에 업로드된 이미지 주소로 reviews_img_path에 컬럼 저장
+          insertImagePathToTable(dataId, uploadFilePath);
         }
       } catch (error) {
-        console.error('수파베이스 데이터 입력 에러:', error);
+        alert('데이터 입력 요청이 실패하였습니다. 지속된 요청 실패 시 고객센터로 문의바랍니다');
+        console.error(error);
       }
     }
   };
@@ -86,6 +82,7 @@ const ReviewEditor = () => {
             maxLength={300}
             placeholder="리뷰는 300자 이하로 작성해주세요."
             className="whitespace-pre-wrap px-3 py-3 w-full h-[150px] border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+            required
           />
         </p>
         {/* 현재 이미지 1개 우선 구현 */}
@@ -94,7 +91,7 @@ const ReviewEditor = () => {
         </p>
         {/* 추후 이미지 2개 이상 구현 예정*/}
         {/* <p>
-          <input type="file" multiple="multiple" name='upload' accept="image/*" onChange={handleImageFileChange} />
+          <input type="file" multiple="multiple" name="upload" accept="image/*" onChange={handleImageFileChange} />
         </p> */}
         {previewImg ? (
           <div>
@@ -114,6 +111,7 @@ const ReviewEditor = () => {
             name="star"
             id="star"
             className="border px-3 py-3 mb-10 border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+            required
           >
             <option value="" disabled>
               1~5점 중 선택해주세요!
@@ -126,16 +124,10 @@ const ReviewEditor = () => {
           </select>
         </p>
         <div className="flex justify-center items-center gap-10">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className=" rounded-full w-24 h-24 bg-green-500 text-white hover:bg-green-100 hover:text-green-500"
-          >
+          <Button type="button" onClick={handleSendToBackClick}>
             뒤로 가기
-          </button>
-          <button className=" rounded-full w-24 h-24 bg-red-500 text-white hover:bg-red-100 hover:text-red-500">
-            등록
-          </button>
+          </Button>
+          <Button type="submit">등록</Button>
         </div>
       </form>
     </div>

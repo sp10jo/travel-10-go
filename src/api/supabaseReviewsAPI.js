@@ -1,6 +1,12 @@
 import supabase from '../supabase/client';
 
 const REVIEWS_SELECT_QUERY = '* , imgs:id(*), places(place_address,place_name), users(*)';
+//from으로 가져오는 테이블 이름 상수화
+const SUPABASE_TABLE_NAME = {
+  REVIEWS: 'reviews',
+  REVIEWS_IMG_PATH: 'reviews_img_path',
+  BUCKET_REVIEW_IMG: 'review-img',
+}
 
 /**
  * title: 리뷰 불러오기(장소기준)
@@ -61,6 +67,41 @@ export const deleteReview = async (reviewId) => {
   }
 };
 
-export const updateReviews = async () => {};
+export const updateReviews = async () => { };
 
-export const createReviews = async () => {};
+/**
+ * title: 리뷰 작성하기
+ * description: 입력된 데이터를 수파베이스 테이블에 insert
+ * in: 내용, 별점, 유저아이디, 장소아이디
+ * out: 
+**/
+export const createReviews = async (content, star, userId, place = null) => {
+  const { data, error } = await supabase.from(SUPABASE_TABLE_NAME.REVIEWS).insert({ content, star, user_id: userId, place_id: place }).select().single();
+  if (error) throw error;
+  return data;
+};
+
+/**
+ * title: 수파베이스 스토리지에 이미지 업로드하기
+ * description: 업로드 된 이미지 주소 및 이미지를 받아 업로드
+ * in: 파일주소 (/public/~~~uuid 파일명), 이미지파일
+ * out: 
+**/
+export const uploadImages = async (filePath, reviewImg) => {
+  const { error } = await supabase.storage.from(SUPABASE_TABLE_NAME.BUCKET_REVIEW_IMG).upload(filePath, reviewImg);
+  if (error) throw error;
+};
+
+/**
+ * title: 이미지 주소 수파베이스에 reviews_img_path에 업로드
+ * description: 업로드 할때 얻은 퍼블릭 이미지 주소와 리뷰를 달고 있는 댓글의 아이디를 이용하여 insert
+ * in: 리뷰글의 아이디, 이미지 퍼블릭 주소
+ * out:
+**/
+export const insertImagePathToTable = async (dataId, uploadFilePath) => {
+  const { error } = await supabase.from(SUPABASE_TABLE_NAME.REVIEWS_IMG_PATH).insert({
+    review_id: dataId,
+    img_path: uploadFilePath,
+  });
+  if (error) throw error;
+};
