@@ -1,43 +1,65 @@
+import { useDeleteReview } from '../hooks/tanstack/useReviewsMutate';
 import Avatar from './common/Avatar';
 import Button from './common/Button';
 
-const ReviewCard = ({ review, className }) => {
-  //리뷰에 담겨있는 정보를 뽑아서 저장합니다
+const ReviewCard = ({ review }) => {
+  //리뷰삭제를 위한 mutate 함수를 불러옴
+  const deleteMutate = useDeleteReview(review.place_id);
+
+  //리뷰에 담겨있는 정보를 뽑아서 저장
   const avatarSrc = review.users.profile_img_path;
   const username = review.users.nickname;
   const content = `${review.content}`;
   const footerText = `${review.places.place_name} :: ${review.places.place_address}`;
 
-  //리뷰하나당 여러개의 사진이 있을 수 있으니 배열로 저장합니다.
+  //리뷰하나당 여러개의 사진이 배열로 저장됨
   const imgArr = review.imgs;
+  //이미지 개수에 따라 클래스내용을 변경
+  const imgClass = imgArr.length === 1 && 'justify-center';
 
+  //자신이 쓴리뷰일때만 버튼을 표시(테스트를위해 항상 true가 되게만들어둠)
+  const isMyReview = !(review.users.id === '전역으로 관리중이 유저아이디');
+
+  //수정버튼을 눌렀을때 실행 되는 핸들러
   const onEditClick = () => {};
 
-  const onDeleteClick = () => {};
+  //삭제버튼을 눌렀을때 실행 되는 핸들러
+  const onDeleteClick = async () => {
+    await deleteMutate.mutate(review.id);
+  };
 
   return (
-    <div className={`bg-gray-200 rounded-md shadow-sm overflow-hidden ${className}`}>
+    <div
+      onClick={(e) => {
+        //카드안에서 발생하는 이벤트가 전달되지 않게하기위해 버블링 막기
+        e.stopPropagation();
+      }}
+      className={`bg-gray-200 rounded-md shadow-sm overflow-hidden m-4 w-[300px] h-[400px] flex flex-col`}
+    >
       <div className="flex items-center justify-between p-3 bg-white">
         <div className="flex items-center">
           <Avatar src={avatarSrc} alt={username} size={30} />
           <span className="ml-2 font-bold">{username}</span>
         </div>
-        <div className="flex gap-1">
-          <Button onClick={onEditClick} className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl">
-            수정
-          </Button>
-          <Button onClick={onDeleteClick} className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl">
-            삭제
-          </Button>
-        </div>
+        {isMyReview && (
+          <div className="flex gap-1">
+            <Button onClick={onEditClick} className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl">
+              수정
+            </Button>
+            <Button onClick={onDeleteClick} className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl">
+              삭제
+            </Button>
+          </div>
+        )}
       </div>
-      <div>
+      <div className={`overflow-x-auto flex ${imgClass} gap-2`}>
         {imgArr.map((path) => {
-          console.log(path);
-          return <img src={path.img_path} key={path.id + review.id} className="w-[50px] h-[50px]"></img>;
+          return (
+            <img src={path} key={path.id + review.id} className="w-[200px] h-[200px] object-cover object-center"></img>
+          );
         })}
       </div>
-      <div className="p-4">
+      <div className="p-4 flex-1">
         <p className="text-sm break-words">{content}</p>
       </div>
 

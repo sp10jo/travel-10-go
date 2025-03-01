@@ -9,7 +9,7 @@ export const useDeleteReview = (reviewId, placeId) => {
       await deleteReview(reviewId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.REVIEWS, placeId] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.REVIEWS, `${placeId}`] });
     },
   });
 };

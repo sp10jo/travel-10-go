@@ -5,7 +5,10 @@ import ReviewCard from './ReviewCard';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
-  const [viewerSizeClass, setViewerSizeClass] = useState('w-[30%]');
+  const [viewerIsEnlargement, setViewerIsEnlargement] = useState(false);
+
+  //확대됐을때의 추가되어 사용되는 뷰어클래스
+  const viewerClass = viewerIsEnlargement && 'w-[80%] flex flex-wrap content-start';
 
   //훅으로 정의되어있는 텐스텍의 state와 data를 받아옵니다.
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
@@ -36,26 +39,25 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex ">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
         <div
           onClick={() => {
             setOpenReviewViewer(false);
           }}
           className="flex-1 h-[100%] bg-black opacity-50"
         ></div>
-        <aside
+        <section
           //사이드바만 스크롤 되게 지정
-          className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerSizeClass}`}
+          className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerClass}`}
           onClick={() => {
-            const size = viewerSizeClass === 'w-[30%]' ? 'w-[80%]' : 'w-[30%]';
-            setViewerSizeClass(size);
+            setViewerIsEnlargement(!viewerIsEnlargement);
           }}
         >
           {/* 리뷰 카드가 들어올 부분입니다. */}
           {reviews.map((review) => {
             return <ReviewCard key={review.id} review={review} />;
           })}
-        </aside>
+        </section>
       </section>
     </>
   );
