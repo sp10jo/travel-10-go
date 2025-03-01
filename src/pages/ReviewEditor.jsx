@@ -1,9 +1,11 @@
 import useAuthStore from '../zustand/authStore';
 import Button from '../components/common/Button';
+import Textarea from '../components/common/Textarea';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFilePath } from '../utils/getFilePath';
 import { createReviews, insertImagePathToTable, uploadImages } from '../api/supabaseReviewsAPI';
+import { PAGE } from '../constants/PageName';
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ const ReviewEditor = () => {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
-    //게시글 등록 확인 컨펌 (취소 false/ 확인 ture)
+    //게시글 등록 확인 컨펌 (취소 false/ 확인 true)
     const isConfirm = window.confirm('등록하시겠습니까?');
 
     // isConfirm true 확인버튼 클릭 시, 수파베이스에 저장하는 로직
@@ -62,6 +64,10 @@ const ReviewEditor = () => {
 
           // [2-3] 스토리지에 업로드된 이미지 주소로 reviews_img_path에 컬럼 저장
           insertImagePathToTable(dataId, uploadFilePath);
+
+          // 3. 리뷰 등록 후 완료 alert 및 리뷰 보고 있던 페이지로 이동
+          alert('리뷰가 등록되었습니다');
+          navigate(PAGE.TEST);
         }
       } catch (error) {
         alert('데이터 입력 요청이 실패하였습니다. 지속된 요청 실패 시 고객센터로 문의바랍니다');
@@ -76,13 +82,10 @@ const ReviewEditor = () => {
       <form onSubmit={handleAddSubmit}>
         <h4>Content</h4>
         <p>
-          <textarea
+          <Textarea
+            placeholder="리뷰는 300자 이하로 작성해주세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            maxLength={300}
-            placeholder="리뷰는 300자 이하로 작성해주세요."
-            className="whitespace-pre-wrap px-3 py-3 w-full h-[150px] border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
-            required
           />
         </p>
         {/* 현재 이미지 1개 우선 구현 */}
