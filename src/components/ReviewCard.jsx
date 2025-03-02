@@ -11,17 +11,20 @@ const ReviewCard = ({ review }) => {
   const username = review.users.nickname;
   const content = `${review.content}`;
   const footerText = `${review.places.place_name} :: ${review.places.place_address}`;
-
-  //리뷰하나당 여러개의 사진이 배열로 저장됨
+  //이미지데이터는 배열에 담겨서 넘어옴
   const imgArr = review.imgs;
-  //이미지 개수에 따라 클래스내용을 변경
+
+  //이미지 개수에 따라 클래스내용을 변경(하나일때는 이미지영역 가운데정렬)
   const imgClass = imgArr.length === 1 && 'justify-center';
 
   //자신이 쓴리뷰일때만 버튼을 표시(테스트를위해 항상 true가 되게만들어둠)
-  const isMyReview = !(review.users.id === '전역으로 관리중이 유저아이디');
+  const isMyReview = !(review.users.id === '전역으로 관리중이 유저아이디ex:1270c5c5-36ee-42a0-97b8-b08d1f39a2a2');
 
   //수정버튼을 눌렀을때 실행 되는 핸들러
-  const onEditClick = () => {};
+  const onEditClick = () => {
+    //나중에 작성예정
+    //:id값을 review-editor페이지로 전달할 예정
+  };
 
   //삭제버튼을 눌렀을때 실행 되는 핸들러
   const onDeleteClick = async () => {
