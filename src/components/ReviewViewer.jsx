@@ -36,14 +36,15 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[80px] flex">
         <div
+          className="flex-1 h-[100%] bg-black opacity-50"
           onClick={() => {
             setOpenReviewViewer(false);
           }}
-          className="flex-1 h-[100%] bg-black opacity-50"
         ></div>
 
+        <div className="bg-red-400 overflow-y-auto h-[100%] w-[30px]" onClick={handleViewerSize}></div>
         <section
           //사이드바만 스크롤 되게 지정
           className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerClass}`}
