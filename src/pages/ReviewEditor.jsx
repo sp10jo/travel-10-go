@@ -81,17 +81,17 @@ const ReviewEditor = () => {
       <h3>리뷰 작성 페이지</h3>
       <form onSubmit={handleAddSubmit}>
         <h4>Content</h4>
-        <p>
+        <div>
           <Textarea
             placeholder="리뷰는 300자 이하로 작성해주세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-        </p>
+        </div>
         {/* 현재 이미지 1개 우선 구현 */}
-        <p>
+        <div>
           <input type="file" name="upload" accept="image/*" onChange={handleImageFileChange} />
-        </p>
+        </div>
         {/* 추후 이미지 2개 이상 구현 예정*/}
         {/* <p>
           <input type="file" multiple="multiple" name="upload" accept="image/*" onChange={handleImageFileChange} />
