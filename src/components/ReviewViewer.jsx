@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useReviewsByPlaceIdQuery } from '../hooks/tanstack/useReviewsQuery';
 import ReviewCard from './ReviewCard';
+import { NavLink } from 'react-router-dom';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
@@ -36,7 +37,8 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[80px] flex">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
+        {/* 리뷰뷰어 바깥영역 클릭시 리뷰뷰어 닫힘 */}
         <div
           className="flex-1 h-[100%] bg-black opacity-50"
           onClick={() => {
@@ -44,12 +46,16 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
           }}
         ></div>
 
+        {/* 리뷰뷰어 크기 확대/축소 이벤트 영역 */}
         <div className="bg-red-400 overflow-y-auto h-[100%] w-[30px]" onClick={handleViewerSize}></div>
+
+        {/* 리뷰뷰어*/}
         <section
           //사이드바만 스크롤 되게 지정
-          className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerClass}`}
+          className={`bg-pink-200 overflow-y-auto h-[100%] pb-[150px] ${viewerClass}`}
           onClick={handleViewerSize}
         >
+          {/* 리뷰뷰어 내용을 정하는 부분 */}
           {isPending || isError ? (
             //로딩중이거나 에러발생시 해당 메시지 띄우기
             <div className="w-[300px]">{isPending ? '로딩중입니다.....' : `에러가발생했습니다 :: ${error}`}</div>
@@ -61,9 +67,18 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
             })
           ) : (
             //리뷰데이터가 0개면 안내 메시지 띄우기
-            <div className="w-[300px]">리뷰가 없습니다 리뷰추가하기</div>
+            <div className="w-[300px]">리뷰가 없습니다 첫 리뷰를 작성해주세요</div>
           )}
         </section>
+
+        {/* 리뷰쓰러가기 버튼 */}
+        <div className="fixed flex justify-end p-5 z-10 bottom-0 right-0">
+          <NavLink to={`/review-editor?placeId=${placeId}`}>
+            <div className="w-[80px] h-[80px] bg-red-500 rounded-full flex justify-center items-center text-[10px] text-white">
+              리뷰쓰러가기
+            </div>
+          </NavLink>
+        </div>
       </section>
     </>
   );
