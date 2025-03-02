@@ -79,13 +79,12 @@ const useUser = () => {
       return false;
     }
 
-    const { loginUserData, error } = await login({ id, password });
+    const { error } = await login({ id, password });
 
     if (error) {
       alert('로그인에 실패했습니다 : ' + error.message);
       return false;
     }
-    useAuthStore.getState().setLogin(loginUserData);
     alert('로그인에 성공했습니다');
     return true;
   };

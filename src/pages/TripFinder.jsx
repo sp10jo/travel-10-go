@@ -31,32 +31,16 @@ const TripFinder = () => {
     // keyword: 검색할 키워드, data: 검색 결과, status: 검색 상태
     ps.keywordSearch(keyword, (data, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        const bounds = new window.kakao.maps.LatLngBounds();
         let markers = [];
-
-        console.log(data);
 
         for (let i = 0; i < data.length; i++) {
           markers.push({
             position: { lat: data[i].y, lng: data[i].x },
             content: data[i].place_name,
           });
-          // 표시 범위 자동 계산
-          bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
         }
 
         setMarkers(markers);
-
-        // 지도 범위 재설정 로직
-        if (window.kakao.maps) {
-          const mapContainer = document.getElementById('map');
-          const mapOption = {
-            center: new window.kakao.maps.LatLng(33.450701, 126.570667), // home에서 선택된 지역에 맞춰 위도,경도 설정하도록 수정 필요
-            level: 3, // 마찬가지로 결정 필요
-          };
-          const map = new window.kakao.maps.Map(mapContainer, mapOption);
-          map.setBounds(bounds);
-        }
       }
     });
   }, [selectedRegion, isKakaoLoaded]);
