@@ -6,7 +6,7 @@ import { QUERY_KEY } from '../../constants/queryKey';
 export const useReviewsByPlaceIdQuery = (placeId) => {
   return useQuery({
     queryFn: () => getReviewsByPlaceId(placeId),
-    queryKey: [QUERY_KEY.REVIEWS, placeId],
+    queryKey: [QUERY_KEY.REVIEWS, `${placeId}`],
   });
 };
 
@@ -14,6 +14,6 @@ export const useReviewsByPlaceIdQuery = (placeId) => {
 export const useReviewsByUserIdQuery = (userId) => {
   return useQuery({
     muaFn: () => getReviewsByUserId(userId),
-    queryKey: [QUERY_KEY.REVIEWS, userId],
+    queryKey: [QUERY_KEY.REVIEWS, `${userId}`],
   });
 };

@@ -5,7 +5,10 @@ import ReviewCard from './ReviewCard';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
-  const [viewerSizeClass, setViewerSizeClass] = useState('w-[30%]');
+  const [viewerIsEnlargement, setViewerIsEnlargement] = useState(false);
+
+  //확대됐을때의 추가되어 사용되는 뷰어클래스
+  const viewerClass = viewerIsEnlargement && 'w-[80%] flex flex-wrap content-start';
 
   //훅으로 정의되어있는 텐스텍의 state와 data를 받아옵니다.
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
@@ -13,7 +16,6 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //isPending, isError 로딩중이거나, 에러중인 상태(boolean 값)을 담고있습니다.
   const { data: reviews, error, isPending, isError } = useReviewsByPlaceIdQuery(placeId);
 
-  //placeId
   useEffect(() => {
     //ReviewViewer 컴포넌트가 호출되면 body에 스크롤막힘
     document.body.style.overflow = 'hidden';
@@ -23,39 +25,44 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
     };
   });
 
-  if (isPending) {
-    return <div>로딩중입니다.</div>;
-  }
-
-  if (isError) {
-    return <div>에러가발생했습니다 :: {error}</div>;
-  }
-
-  //reviews : 카드를 표시할때 사용할 리뷰데이터들 입니다.
-  console.log(reviews);
+  //viewer사이즈를 조절하는 핸들러
+  const handleViewerSize = () => {
+    //리뷰개수가 0개면 사이즈 못커지게
+    if (reviews?.length === 0) {
+      return;
+    }
+    setViewerIsEnlargement(!viewerIsEnlargement);
+  };
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex ">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
         <div
           onClick={() => {
             setOpenReviewViewer(false);
           }}
           className="flex-1 h-[100%] bg-black opacity-50"
         ></div>
-        <aside
+
+        <section
           //사이드바만 스크롤 되게 지정
-          className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerSizeClass}`}
-          onClick={() => {
-            const size = viewerSizeClass === 'w-[30%]' ? 'w-[80%]' : 'w-[30%]';
-            setViewerSizeClass(size);
-          }}
+          className={`bg-pink-200 overflow-y-auto h-[100%] ${viewerClass}`}
+          onClick={handleViewerSize}
         >
-          {/* 리뷰 카드가 들어올 부분입니다. */}
-          {reviews.map((review) => {
-            return <ReviewCard key={review.id} review={review} />;
-          })}
-        </aside>
+          {isPending || isError ? (
+            //로딩중이거나 에러발생시 해당 메시지 띄우기
+            <div className="w-[300px]">{isPending ? '로딩중입니다.....' : `에러가발생했습니다 :: ${error}`}</div>
+          ) : //리뷰데이터 개수로 메시지 구분해서 띄우기
+          reviews?.length > 0 ? (
+            //리뷰데이터(array)로 카드 찍어내기
+            reviews.map((review) => {
+              return <ReviewCard key={review.id} review={review} />;
+            })
+          ) : (
+            //리뷰데이터가 0개면 안내 메시지 띄우기
+            <div className="w-[300px]">리뷰가 없습니다 리뷰추가하기</div>
+          )}
+        </section>
       </section>
     </>
   );
