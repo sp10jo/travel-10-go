@@ -36,9 +36,17 @@ const EditProfile = () => {
     if (!user) return;
 
     let uploadedImagePath = userData.profile_img_path || 'default-avatar.png';
+
     if (newProfileImage) {
-      const { data } = await uploadProfileImage(newProfileImage);
-      uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${data.path}`;
+      try {
+        const { data } = await uploadProfileImage(newProfileImage);
+        uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${
+          data.path
+        }`;
+      } catch (error) {
+        alert('프로필 이미지 업로드 실패');
+        return;
+      }
     }
 
     const updatedUserData = {
@@ -51,7 +59,8 @@ const EditProfile = () => {
       alert('프로필 수정 실패');
       return;
     }
-
+    // zustand 상태 업데이트
+    useAuthStore.getState().setLogin({ ...user, profile_img_path: uploadedImagePath });
     alert('프로필이 수정되었습니다!');
   };
 
