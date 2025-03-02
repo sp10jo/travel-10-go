@@ -36,7 +36,7 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[80px] flex">
         <div
           onClick={() => {
             setOpenReviewViewer(false);

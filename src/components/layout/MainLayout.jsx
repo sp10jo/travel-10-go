@@ -4,8 +4,11 @@ import Header from './Header';
 const MainLayout = () => {
   return (
     <div className="flex flex-col h-screen">
-      <Header />
-      <main className="flex flex-col flex-1">
+      <header className="fixed w-[100%] h-[80px]">
+        <Header />
+      </header>
+
+      <main className="flex flex-col flex-1 pt-[80px]">
         <Outlet />
       </main>
     </div>
