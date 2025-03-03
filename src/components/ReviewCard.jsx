@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { useDeleteReview } from '../hooks/tanstack/useReviewsMutate';
 import Avatar from './common/Avatar';
 import Button from './common/Button';
 
 const ReviewCard = ({ review }) => {
+  const navigate = useNavigate();
   //리뷰삭제를 위한 mutate 함수를 불러옴
   const deleteMutate = useDeleteReview(review.place_id);
 
@@ -22,8 +24,8 @@ const ReviewCard = ({ review }) => {
 
   //수정버튼을 눌렀을때 실행 되는 핸들러
   const onEditClick = () => {
-    //나중에 작성예정
-    //:id값을 review-editor페이지로 전달할 예정
+    //수정버튼 클릭시 리뷰작성페이지로 리뷰 아이디 넘김
+    navigate(`/review-editor?reviewId=${review.id}`);
   };
 
   //삭제버튼을 눌렀을때 실행 되는 핸들러
