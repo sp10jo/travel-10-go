@@ -29,7 +29,7 @@ const Youtube = () => {
     } catch (err) {
       //alert 같은 것으로 처리하면 query에서 정상 동작 판단함
       //query의 error 객체로 아래 값을 전달하는 것
-      throw new Error('영상을 불러옴에 오류가 있습니다!' + err);
+      throw new Error('영상을 불러옴에 오류가 있습니다! : ' + err);
     }
   };
 
@@ -49,7 +49,7 @@ const Youtube = () => {
         {
           //isError 초기 false, 에러나면 true
           //error 초기 null/undefinde 값을 제대로 받아오면 null로 존재
-          isError && <h3>📣 {error} </h3>
+          isError && <h3>📣 {error.message} </h3>
         }
         {
           //isLoding 이 true인 초기에 값이 비었기에 []를 map해서 오류 막음 + []라서 페이지에 나타나지 않습니다.
