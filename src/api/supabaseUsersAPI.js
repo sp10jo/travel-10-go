@@ -73,6 +73,38 @@ export const getUserByNickName = async (nickname) => {
   return { data, error };
 };
 
-export const updateUser = async () => {};
+export const updateUser = async (userId, updatedData) => {
+  const { data: currentData, error: fetchError } = await supabase
+    .from('users')
+    .select('nickname, profile_img_path')
+    .eq('id', userId)
+    .single();
+
+  // 변경된 데이터만 업데이트
+  const updatePayload = {};
+  if (updatedData.nickname && updatedData.nickname !== currentData.nickname) {
+    updatePayload.nickname = updatedData.nickname;
+  }
+  if (updatedData.profile_img_path && updatedData.profile_img_path !== currentData.profile_img_path) {
+    updatePayload.profile_img_path = updatedData.profile_img_path;
+  }
+
+  if (Object.keys(updatePayload).length === 0) {
+    console.warn('⚠️ 변경된 데이터가 없어 업데이트를 실행하지 않음.');
+    return { error: null };
+  }
+
+  // 변경 사항이 있는 경우에만 업데이트 실행
+  const { data, error } = await supabase
+    .from('users')
+    .update(updatePayload)
+    .eq('id', userId)
+    .select('*');
+
+  if (error) {
+    return { error };
+  }
+  return { data };
+};
 
 export const deleteUser = async () => {};
