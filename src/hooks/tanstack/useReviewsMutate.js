@@ -7,7 +7,7 @@ export const useDeleteReview = (placeId) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (reviewId) => {
-      await deleteReview(reviewId + '111');
+      await deleteReview(reviewId);
     },
 
     onMutate: async (reviewId) => {
