@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 const EditProfile = () => {
   const { user } = useAuthStore();
   const [newProfileImage, setNewProfileImage] = useState(null);
+  const [newNickname, setNewNickname] = useState('');
 
   const {
     data: userData,
@@ -17,6 +18,11 @@ const EditProfile = () => {
     queryKey: ['user', user?.id],
     queryFn: () => getUserByUUID(user.id),
     enabled: !!user?.id,
+    onSuccess: (data) => {
+      if (data) {
+        setNewNickname(data.nickname || '');
+      }
+    },
   });
 
   if (!user) {
@@ -35,14 +41,12 @@ const EditProfile = () => {
   const handleSaveProfile = async () => {
     if (!user) return;
 
-    let uploadedImagePath = userData.profile_img_path || 'default-avatar.png';
+    let uploadedImagePath = userData?.profile_img_path || 'default-avatar.png';
 
     if (newProfileImage) {
       try {
         const { data } = await uploadProfileImage(newProfileImage);
-        uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${
-          data.path
-        }`;
+        uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${data.path}`;
       } catch (error) {
         alert('프로필 이미지 업로드 실패');
         return;
@@ -50,7 +54,7 @@ const EditProfile = () => {
     }
 
     const updatedUserData = {
-      nickname: user.nickname,
+      newNickname,
       profile_img_path: uploadedImagePath,
     };
 
@@ -60,7 +64,7 @@ const EditProfile = () => {
       return;
     }
     // zustand 상태 업데이트
-    useAuthStore.getState().setLogin({ ...user, profile_img_path: uploadedImagePath });
+    useAuthStore.getState().setLogin({ ...user, profile_img_path: uploadedImagePath, newNickname });
     alert('프로필이 수정되었습니다!');
   };
 
@@ -79,9 +83,15 @@ const EditProfile = () => {
           <input type="file" className="hidden" onChange={handleImageChange} />
         </label>
       </div>
+      <span className="text-sm text-gray-500">이미지를 클릭하여 변경</span>
 
-      {/* 닉네임 수정 */}
-      <Input type="text" value={user.nickname || ''} readOnly className="w-64 text-center" />
+      {/* 닉네임 수정 가능하도록 수정 */}
+      <Input
+        type="text"
+        value={newNickname}
+        onChange={(e) => setNewNickname(e.target.value)}
+        className="w-64 text-center"
+      />
 
       {/* 저장 버튼 */}
       <Button onClick={handleSaveProfile} className="mt-4 bg-green-500 text-white">
