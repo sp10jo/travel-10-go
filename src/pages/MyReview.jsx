@@ -6,6 +6,9 @@ const MyReview = () => {
   const user = useAuthStore((state) => state.user);
   const { data: reviews, isLoading, error } = useReviewsByUserIdQuery(user?.id);
 
+  if (!user) {
+    return <div>로그인이 필요합니다.</div>;
+  }
   if (isLoading) {
     return <div>리뷰를 불러오는 중...</div>;
   }

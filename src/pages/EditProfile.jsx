@@ -54,7 +54,7 @@ const EditProfile = () => {
     }
 
     const updatedUserData = {
-      newNickname,
+      nickname: newNickname,
       profile_img_path: uploadedImagePath,
     };
 
