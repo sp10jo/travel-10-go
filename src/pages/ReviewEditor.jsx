@@ -1,7 +1,6 @@
 import useAuthStore from '../zustand/authStore';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import ImgFileUploader from '../components/common/ImgFileUploader';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFilePath } from '../utils/getFilePath';
@@ -11,18 +10,28 @@ import { PAGE } from '../constants/PageName';
 const ReviewEditor = () => {
   const navigate = useNavigate();
 
-  // 상태관리
-  const { user } = useAuthStore();
+  //상태관리
   const [content, setContent] = useState('');
   const [star, setStar] = useState('');
-  // ImgFileUploader로 받아온 이미지 배열로 저장
-  const [reviewImgs, setReviewImgs] = useState([]);
-  // 현재 없는 place_id 정보는 null값으로 지정 (추후 데이터 테이블 연동)
+  const [reviewImg, setReviewImg] = useState(null);
+  const [previewImg, setPreviewImg] = useState(null);
+  const { user } = useAuthStore();
+
+  //현재 없는 place_id 정보는 null값으로 지정 (추후 데이터 테이블 연동)
   const place = null;
 
-  // 이미지 업데이트 함수
-  const handleImagesChange = (images) => {
-    setReviewImgs(images);
+  // 이미지 변경 함수
+  const handleImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReviewImg(file);
+    }
+    // FileReader를 사용하여 이미지 미리보기 생성
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewImg(reader.result);
+    };
   };
 
   // 뒤로가기 버튼 핸들러
@@ -34,35 +43,34 @@ const ReviewEditor = () => {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
-    // 게시글 등록 확인 컨펌 (취소 false / 확인 true)
+    //게시글 등록 확인 컨펌 (취소 false/ 확인 true)
     const isConfirm = window.confirm('등록하시겠습니까?');
 
+    // isConfirm true 확인버튼 클릭 시, 수파베이스에 저장하는 로직
     if (isConfirm) {
       try {
         // 1. reviews 테이블에 저장하는 로직
         const reviewData = await createReviews(content, star, user.id, place);
         const dataId = reviewData.id;
 
-        // 2. reviews_img_path 테이블에 저장하는 로직
-        if (reviewImgs.length > 0) {
-          for (const img of reviewImgs) {
-            const filePath = getFilePath(img);
-            const uploadFilePath = `https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/${SUPABASE_TABLE_NAME.BUCKET_REVIEW_IMG}/${filePath}`;
+        // 2 reviews_img_path 테이블에 저장하는 로직
+        // [2-1] 리뷰 작성 시 업로드된 이미지의 스토리지 주소 얻기
+        if (reviewImg) {
+          const filePath = getFilePath(reviewImg);
+          const uploadFilePath = `https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/review${filePath}`;
 
-            // 2-1. 이미지 스토리지에 업로드
-            await uploadImages(filePath, img);
+          // [2-2] 얻은 이미지 주소로 스토리지에 업로드
+          uploadImages(filePath, reviewImg);
 
-            // 2-2. 스토리지에 업로드된 이미지 주소를 reviews_img_path 테이블에 저장
-            // await insertImagePathToTable(dataId, uploadFilePath);
-            await insertImagePathToTable(dataId, uploadFilePath);
-          }
+          // [2-3] 스토리지에 업로드된 이미지 주소로 reviews_img_path에 컬럼 저장
+          insertImagePathToTable(dataId, uploadFilePath);
+
+          // 3. 리뷰 등록 후 완료 alert 및 리뷰 보고 있던 페이지로 이동
+          alert('리뷰가 등록되었습니다');
+          navigate(PAGE.TEST);
         }
-
-        // 3. 리뷰 등록 후 완료 alert 및 리뷰 보고 있던 페이지로 이동
-        alert('리뷰가 등록되었습니다.');
-        navigate(PAGE.TEST);
       } catch (error) {
-        alert('데이터 입력 요청이 실패하였습니다. 지속된 요청 실패 시 고객센터로 문의바랍니다.');
+        alert('데이터 입력 요청이 실패하였습니다. 지속된 요청 실패 시 고객센터로 문의바랍니다');
         console.error(error);
       }
     }
@@ -80,9 +88,23 @@ const ReviewEditor = () => {
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
-
-        <h4>이미지 업로드하기 (최대 3장)</h4>
-        <ImgFileUploader maxImages={3} onImagesChange={handleImagesChange} />
+        {/* 현재 이미지 1개 우선 구현 */}
+        <div>
+          <input type="file" name="upload" accept="image/*" onChange={handleImageFileChange} />
+        </div>
+        {/* 추후 이미지 2개 이상 구현 예정*/}
+        {/* <p>
+          <input type="file" multiple="multiple" name="upload" accept="image/*" onChange={handleImageFileChange} />
+        </p> */}
+        {previewImg ? (
+          <div>
+            <img className="w-[300px] h-[300px] object-cover" src={previewImg} alt="preview-image" />
+          </div>
+        ) : (
+          <div className="flex justify-center items-center w-[400px] h-[300px] rounded-3xl bg-gray-200">
+            이미지를 업로드해주세요
+          </div>
+        )}
 
         <h4>리뷰 평점</h4>
         <p>
