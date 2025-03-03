@@ -17,6 +17,9 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //isPending, isError 로딩중이거나, 에러중인 상태(boolean 값)을 담고있습니다.
   const { data: reviews, error, isPending, isError } = useReviewsByPlaceIdQuery(placeId);
 
+  //reviews를 최신 작성 순으로 정렬하기(나중에 정렬옵션 추가)
+  reviews?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
   useEffect(() => {
     //ReviewViewer 컴포넌트가 호출되면 body에 스크롤막힘
     document.body.style.overflow = 'hidden';
