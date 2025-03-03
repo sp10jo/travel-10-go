@@ -96,7 +96,28 @@ export const deleteReview = async (reviewId) => {
   }
 };
 
-export const updateReviews = async () => {};
+/**
+ * title: 리뷰 수정하기 (reviewId 기준)
+ * description: 수정된 데이터를 수파베이스 테이블에 insert
+ * in: 리뷰아이디, 내용, 별점, 유저아이디, 장소아이디
+ * out:
+ **/
+export const updateReviews = async (content, star, userId, place, reviewId) => {
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLE_NAME.REVIEWS)
+    .upsert({
+      id: reviewId,
+      content,
+      star,
+      user_id: userId,
+      place_id: place
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
 
 /**
  * title: 리뷰 작성하기
@@ -107,7 +128,12 @@ export const updateReviews = async () => {};
 export const createReviews = async (content, star, userId, place) => {
   const { data, error } = await supabase
     .from(SUPABASE_TABLE_NAME.REVIEWS)
-    .insert({ content, star, user_id: userId, place_id: place })
+    .insert({
+      content,
+      star,
+      user_id: userId,
+      place_id: place
+    })
     .select()
     .single();
   if (error) throw error;
