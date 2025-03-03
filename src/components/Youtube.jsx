@@ -27,13 +27,16 @@ const Youtube = () => {
       });
       return response.data.items;
     } catch (err) {
-      alert('영상을 불러옴에 오류가 있습니다!' + err);
+      //alert 같은 것으로 처리하면 query에서 정상 동작 판단함
+      //query의 error 객체로 아래 값을 전달하는 것
+      throw new Error('영상을 불러옴에 오류가 있습니다!' + err);
     }
   };
 
   //Tansquery 적용
-  //videos: api에서 받아올 영상 값들 / isLoding: 초기 true, 값 받아오면 결과 상관 x false / error: 값을 못 받아오면 error 객체 들어온다.
-  const { data: videos, isLoading, error } = useYoutubeQuery(selectedRegion, handleVideo);
+  //videos: api에서 받아올 영상 값들 / isLoding: 초기 true, 값 받아오면 결과 상관 x false
+  //isError: 초기 false 오류나면 true /error: 값을 못 받아오면 error 객체 들어온다.
+  const { data: videos, isLoading, isError, error } = useYoutubeQuery(selectedRegion, handleVideo);
 
   return (
     <div className="p-4">
@@ -44,14 +47,12 @@ const Youtube = () => {
           isLoading && <h3>📣 영상을 불러오는 중...</h3>
         }
         {
-          //error면 영상 불러옴에 문제 있음 알리기
-          //처음에 null, undefined로 존재, 값을 받고 isLoding: false +  값을 가져오는데 오류가 있을 때 (erroe: 에러객체) 나타납니다.
-          //값을 제대로 받아오면 null로 존재합니다.
-          error && <h3>📣 영상을 불러옴에 문제가 있습니다! </h3>
+          //isError 초기 false, 에러나면 true
+          //error 초기 null/undefinde 값을 제대로 받아오면 null로 존재
+          isError && <h3>📣 {error} </h3>
         }
         {
-          //처음에 tansquery 적용 전이라 빈 값이 와서 .. 빈 값이 오면 [ ]로 map 돌리고자 videos || [] 작성했습니다.
-          //isLoding 이 true인 초기에 값이 비었기에 []를 map해서 페이지에 나타나지 않습니다.
+          //isLoding 이 true인 초기에 값이 비었기에 []를 map해서 오류 막음 + []라서 페이지에 나타나지 않습니다.
           //api로 값이 받아오고 isLoding 이 false가 되면 페이지에 나타냅니다.
 
           //플레이리스트 링크 형태: https://www.youtube.com/embed/?list = + playlistId
