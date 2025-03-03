@@ -14,7 +14,7 @@ const Header = () => {
   const AVATAR_SIZE = 50;
 
   return (
-    <header className="flex justify-between items-center p-4 bg-white shadow-md">
+    <header className="flex justify-between items-center p-4 bg-white shadow-md h-[100%]">
       <a href="/" className="text-2xl text-blue-500 font-arvo font-bold no-underline hover:no-underline">
         10Go
       </a>
