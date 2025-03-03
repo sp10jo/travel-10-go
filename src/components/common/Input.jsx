@@ -3,7 +3,8 @@ const Input = ({
   type = 'text',
   placeholder = '',
   value,
-  onChange /*, isError, errorMsg, label, labelPosition, withPasswordIcon*/,
+  onChange,
+  className = '' /*, isError, errorMsg, label, labelPosition, withPasswordIcon*/,
 }) => (
   <input
     type={type}
