@@ -56,9 +56,13 @@ const ReviewCard = ({ review }) => {
         )}
       </div>
       <div className={`overflow-x-auto flex ${imgClass} gap-2`}>
-        {imgArr.map((path) => {
+        {imgArr.map((img) => {
           return (
-            <img src={path} key={path.id + review.id} className="w-[200px] h-[200px] object-cover object-center"></img>
+            <img
+              src={img.img_path}
+              key={img.id + review.id}
+              className="w-[200px] h-[200px] object-cover object-center"
+            ></img>
           );
         })}
       </div>
