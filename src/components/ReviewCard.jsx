@@ -2,9 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { useDeleteReview } from '../hooks/tanstack/useReviewsMutate';
 import Avatar from './common/Avatar';
 import Button from './common/Button';
+import useAuthStore from '../zustand/authStore';
 
 const ReviewCard = ({ review }) => {
   const navigate = useNavigate();
+  const { id: CurrentUserId } = useAuthStore((store) => store.user);
+
   //리뷰삭제를 위한 mutate 함수를 불러옴
   const deleteMutate = useDeleteReview(review.place_id);
 
@@ -20,7 +23,7 @@ const ReviewCard = ({ review }) => {
   const imgClass = imgArr.length === 1 && 'justify-center';
 
   //자신이 쓴리뷰일때만 버튼을 표시(테스트를위해 항상 true가 되게만들어둠)
-  const isMyReview = !(review.users.id === '전역으로 관리중이 유저아이디ex:1270c5c5-36ee-42a0-97b8-b08d1f39a2a2');
+  const isMyReview = review.users.id === CurrentUserId;
 
   //수정버튼을 눌렀을때 실행 되는 핸들러
   const onEditClick = () => {
