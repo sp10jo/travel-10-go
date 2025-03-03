@@ -39,7 +39,10 @@ export const SUPABASE_TABLE_NAME = {
  *   ]
  */
 export const getReviewsByPlaceId = async (placeId) => {
-  const { data, error } = await supabase.from('reviews').select(REVIEWS_SELECT_QUERY).eq('place_id', placeId);
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLE_NAME.REVIEWS)
+    .select(REVIEWS_SELECT_QUERY)
+    .eq('place_id', placeId);
   if (error) {
     throw error;
   }
@@ -53,7 +56,27 @@ export const getReviewsByPlaceId = async (placeId) => {
  * out : getReviewsByPlaceId의 out과 동일
  **/
 export const getReviewsByUserId = async (userId) => {
-  const { data, error } = await supabase.from('reviews').select(REVIEWS_SELECT_QUERY).eq('user_id', userId);
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLE_NAME.REVIEWS)
+    .select(REVIEWS_SELECT_QUERY)
+    .eq('user_id', userId);
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+/**
+ * title: 리뷰 불러오기(리뷰Id기준)
+ * description : 유저아이디를 기준으로 리뷰데이터를 가져옵니다.
+ * in : id(리뷰의id) : 'a9d4376d-2e65-4be1-ba62-5f6103500751'
+ * out : getReviewsByPlaceId의 out과 동일
+ **/
+export const getReviewsByReviewId = async (reviewId) => {
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLE_NAME.REVIEWS)
+    .select(REVIEWS_SELECT_QUERY)
+    .eq('id', reviewId);
   if (error) {
     throw error;
   }
@@ -67,7 +90,7 @@ export const getReviewsByUserId = async (userId) => {
  * out :
  **/
 export const deleteReview = async (reviewId) => {
-  const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
+  const { error } = await supabase.from(SUPABASE_TABLE_NAME.REVIEWS).delete().eq('id', reviewId);
   if (error) {
     throw error;
   }
@@ -81,7 +104,7 @@ export const updateReviews = async () => {};
  * in: 내용, 별점, 유저아이디, 장소아이디
  * out:
  **/
-export const createReviews = async (content, star, userId, place = null) => {
+export const createReviews = async (content, star, userId, place) => {
   const { data, error } = await supabase
     .from(SUPABASE_TABLE_NAME.REVIEWS)
     .insert({ content, star, user_id: userId, place_id: place })
