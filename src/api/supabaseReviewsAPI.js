@@ -2,7 +2,7 @@ import supabase from '../supabase/client';
 
 const REVIEWS_SELECT_QUERY = '* , imgs:id(*), places(place_address,place_name), users(*)';
 //from으로 가져오는 테이블 이름 상수화
-const SUPABASE_TABLE_NAME = {
+export const SUPABASE_TABLE_NAME = {
   REVIEWS: 'reviews',
   REVIEWS_IMG_PATH: 'reviews_img_path',
   BUCKET_REVIEW_IMG: 'review-img',
