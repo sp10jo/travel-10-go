@@ -3,6 +3,7 @@ import { useDeleteReview } from '../hooks/tanstack/useReviewsMutate';
 import Avatar from './common/Avatar';
 import Button from './common/Button';
 import useAuthStore from '../zustand/authStore';
+import { makeRationStar } from '../utils/ratingUtils';
 
 const ReviewCard = ({ review }) => {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const ReviewCard = ({ review }) => {
       <div className="p-4 flex-1">
         <p className="text-sm break-words">{content}</p>
       </div>
-
+      <div className="pl-4 text-lg">{makeRationStar(review.star)}</div>
       {footerText && (
         <div className="flex justify-between items-center p-3 bg-white">
           <span className="text-red-500 text-sm">{footerText}</span>
