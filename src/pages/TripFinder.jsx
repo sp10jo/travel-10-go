@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ReviewViewer from '../components/ReviewViewer';
 import KakaoMap from '../components/maps/KakaoMap';
 import Youtube from '../components/Youtube';

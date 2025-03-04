@@ -45,6 +45,8 @@ const KakaoMap = () => {
   useEffect(() => {
     if (!map || !selectedRegion) return;
 
+    setMarkers([]);
+
     const ps = new window.kakao.maps.services.Places();
     const keyword = `${selectedRegion} ${selectedCategory}`;
 
