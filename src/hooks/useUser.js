@@ -8,6 +8,7 @@ const useUser = () => {
     const password = e.target.password.value;
     const nickname = e.target.nickname.value;
     const profile_img = e.target.profile_img.files[0];
+    console.log(password);
 
     if (!email || !id || !password || !nickname) {
       alert('모든 항목을 입력해주세요');
@@ -18,8 +19,7 @@ const useUser = () => {
       alert('이미지 파일만 업로드 가능합니다');
       return false;
     }
-
-    if (checkStringLength(password, 8, 20)) {
+    if (!checkStringLength(password, 8, 20)) {
       alert('비밀번호는 8자 이상 20자 이하로 입력해주세요');
       return false;
     }
