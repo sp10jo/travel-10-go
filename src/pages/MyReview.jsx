@@ -1,7 +1,7 @@
 import { useReviewsByUserIdQuery } from '../hooks/tanstack/useReviewsQuery';
 import ReviewCard from '../components/ReviewCard';
 import useAuthStore from '../zustand/authStore';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 const MyReview = () => {
   const user = useAuthStore((state) => state.user);
@@ -16,12 +16,12 @@ const MyReview = () => {
     enabled: Boolean(user?.id), // user.id가 존재할 때만 쿼리를 실행
   });
 
-  useEffect(() => {
-    if (!user) {
-      alert('로그인이 필요합니다.');
-      window.location.href = '/login';
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     alert('로그인이 필요합니다.');
+  //     window.location.href = '/login';
+  //   }
+  // }, [user]);
 
   if (!user) {
     return <p className="text-center">로그인 정보를 불러오는 중...</p>;
