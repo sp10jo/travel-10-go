@@ -26,10 +26,14 @@ const Home = () => {
           나의 여행 스타일 찾기 ➤
         </button>
       </div>
+      <div
+        className="flex flex-col items-center justify-center w-full h-80 bg-cover bg-center"
+        style={{ backgroundImage: "url('home/backgroundimg.png')" }}
+      >
+        <img src="home/10go.png" alt="데이터 요청에 실패했습니다." style={{ width: '12%' }} />
+        <h3 className="flex text-black">여행하고 싶은 지역을 선택해주세요!</h3>
+      </div>
       <Spacer size={50} />
-      <h3 className="flex">여행하고 싶은 지역을 선택해주세요!</h3>
-      <Spacer size={100} />
-
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {MAIN_LOCATION.map((region) => (
           <RegionCard key={region} region={region} />
