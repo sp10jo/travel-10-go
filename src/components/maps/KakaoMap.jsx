@@ -31,7 +31,7 @@ const KakaoMap = () => {
 
   const [map, setMap] = useState(null);
   const [markerImage, setMarkerImage] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('관광지');
+  const [selectedCategories, setSelectedCategories] = useState(['관광지']);
   const [markers, setMarkers] = useState([]);
   const [hoveredMarker, setHoveredMarker] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
@@ -55,32 +55,50 @@ const KakaoMap = () => {
   }, []);
 
   useEffect(() => {
-    if (!map || !selectedRegion) return;
-
-    setMarkers([]);
+    if (!map || !selectedRegion || selectedCategories.length === 0) {
+      setMarkers([]);
+      return;
+    }
 
     const ps = new window.kakao.maps.services.Places();
-    const keyword = `${selectedRegion} ${selectedCategory}`;
+    const allMarkers = [];
 
-    ps.keywordSearch(keyword, (data, status) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const newMarkers = data.map((place) => ({
-          position: { lat: parseFloat(place.y), lng: parseFloat(place.x) },
-          content: place.place_name,
-          placeId: place.id,
-          addressName: place.address_name,
-        }));
+    const searchMarkers = async () => {
+      for (const category of selectedCategories) {
+        const keyword = `${selectedRegion} ${category}`;
 
-        setMarkers(newMarkers);
+        await new Promise((resolve) => {
+          ps.keywordSearch(keyword, (data, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const newMarkers = data.map((place) => ({
+                position: { lat: parseFloat(place.y), lng: parseFloat(place.x) },
+                content: place.place_name,
+                placeId: place.id,
+                addressName: place.address_name,
+              }));
 
-        const bounds = new window.kakao.maps.LatLngBounds();
-        newMarkers.forEach((marker) =>
-          bounds.extend(new window.kakao.maps.LatLng(marker.position.lat, marker.position.lng))
-        );
-        map.setBounds(bounds);
+              allMarkers.push(...newMarkers);
+              resolve();
+            } else {
+              resolve(); // 검색에 실패해도 resolve
+            }
+          });
+        });
       }
-    });
-  }, [map, selectedCategory, selectedRegion]);
+
+      // 모든 검색이 끝난 후, 마커를 한 번에 업데이트
+      setMarkers(allMarkers);
+
+      // boundary 업데이트
+      const bounds = new window.kakao.maps.LatLngBounds();
+      allMarkers.forEach((marker) =>
+        bounds.extend(new window.kakao.maps.LatLng(marker.position.lat, marker.position.lng))
+      );
+      map.setBounds(bounds);
+    };
+
+    searchMarkers();
+  }, [map, selectedCategories, selectedRegion]);
 
   const handleSetStart = () => {
     setRouteInfo({ ...routeInfo, start: contextMenu.position });
@@ -178,6 +196,12 @@ const KakaoMap = () => {
     });
   };
 
+  const handleCategorySelect = (category) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(category) ? prevSelected.filter((cat) => cat !== category) : [...prevSelected, category]
+    );
+  };
+
   return (
     <div className="w-full h-full" id="map">
       <div className="absolute p-2 z-10 w-full rounded-lg">
@@ -185,14 +209,14 @@ const KakaoMap = () => {
           {categoryTags.map((category) => (
             <motion.button
               key={category.id}
-              onClick={() => setSelectedCategory(category.name)}
+              onClick={() => handleCategorySelect(category.name)}
               className={`px-3 py-1 rounded-full text-sm whitespace-nowrap ${
-                selectedCategory === category.name
+                selectedCategories.includes(category.name)
                   ? 'bg-blue-500 text-white'
                   : 'bg-card_border_gray text-gray-700 hover:bg-lightgray'
               }`}
               initial={{ scale: 1 }}
-              animate={{ scale: selectedCategory === category.name ? 1.1 : 1 }}
+              animate={{ scale: selectedCategories.includes(category.name) ? 1.1 : 1 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
               {category.icon} {category.name}
@@ -209,6 +233,7 @@ const KakaoMap = () => {
         style={{ width: '100%', height: '100%' }}
         level={DEFAULT_ZOOM}
         onCreate={setMap}
+        onClick={() => setContextMenu(null)}
       >
         {markers.map((marker, index) => (
           <MapMarker
