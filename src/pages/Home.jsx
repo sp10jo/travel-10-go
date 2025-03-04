@@ -18,7 +18,7 @@ const Home = () => {
         </button>
       </div>
       <Spacer size={50} />
-      <h3 className="flex">여행하고 싶은 지역을 선택해주세요!버셀테스트Main</h3>
+      <h3 className="flex">여행하고 싶은 지역을 선택해주세요!</h3>
       <Spacer size={100} />
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
