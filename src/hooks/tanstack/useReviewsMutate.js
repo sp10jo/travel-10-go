@@ -11,21 +11,21 @@ export const useDeleteReview = (placeId, userId) => {
     },
 
     onMutate: async (reviewId) => {
-      //해당 키에대한 쿼리무효화(데이터읽어오기) 취소
-      //리뷰에대한 캐시데이터를 두군데서 가지고있을 수 있기때문에 삭제요청시 둘다 처리
+      //해당 키에대한 쿼리무효화(데이터읽어오기) 취소(삭제요청 중 데이터가져오면 동기화문제)
+      //리뷰에대한 캐시데이터를 두군데에서 가지고있을 수 있기때문에 삭제요청시 둘다 처리
       await Promise.all([
         queryClient.cancelQueries({ queryKey: [QUERY_KEY.REVIEWS, `${placeId}`] }),
         queryClient.cancelQueries({ queryKey: [QUERY_KEY.REVIEWS, `${userId}`] }),
       ]);
 
-      //placeID기준 캐시테이블데이터 변경
+      //placeID기준 캐시데이터 변경
       queryClient.setQueryData([QUERY_KEY.REVIEWS, `${placeId}`], (oldReviews) => {
         //캐시데이터에서 리뷰아이디에 해당하는 값을 삭제
         return oldReviews?.filter((review) => {
           return review.id !== reviewId;
         });
       });
-      //userID기준 캐시테이블데이터 변경
+      //userID기준 캐시데이터 변경
       queryClient.setQueryData([QUERY_KEY.REVIEWS, `${userId}`], (oldReviews) => {
         //캐시데이터에서 리뷰아이디에 해당하는 값을 삭제
         return oldReviews?.filter((review) => {
