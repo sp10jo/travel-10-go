@@ -5,12 +5,14 @@ import ReviewCard from './ReviewCard';
 import { NavLink } from 'react-router-dom';
 import { getAverageReviewsRating } from '../utils/ratingUtils';
 import useReviewStore from '../zustand/reviewStore';
+import { createPlace } from '../api/supabasePlaceApi';
 
-const ReviewViewer = ({ placeId }) => {
+const ReviewViewer = () => {
+  //ReviewViewer가 열려있는 상태
+  const { setOpenReviewViewer, place } = useReviewStore();
+
   //드로어의 크기를 변경하는 state 입니다
   const [viewerIsEnlargement, setViewerIsEnlargement] = useState(false);
-  //ReviewViewer가 열려있는 상태
-  const { setOpenReviewViewer } = useReviewStore();
 
   //확대됐을때의 추가되어 사용되는 뷰어클래스
   const viewerClass = viewerIsEnlargement ? 'w-[80%]' : 'w-[330px]';
@@ -19,7 +21,7 @@ const ReviewViewer = ({ placeId }) => {
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
   //error : isError가 true일때 어떤 에러가 났는지 담겨있습니다.
   //isPending, isError 로딩중이거나, 에러중인 상태(boolean 값)을 담고있습니다.
-  const { data: reviews, error, isPending, isError } = useReviewsByPlaceIdQuery(placeId);
+  const { data: reviews, error, isPending, isError } = useReviewsByPlaceIdQuery(place.placeId);
 
   //reviews를 최신 작성 순으로 정렬하기(나중에 정렬옵션 추가)
   reviews?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -32,15 +34,6 @@ const ReviewViewer = ({ placeId }) => {
       document.body.style.overflow = 'auto';
     };
   });
-
-  //viewer사이즈를 조절하는 핸들러
-  const handleViewerSize = () => {
-    //리뷰개수가 0개면 사이즈 못커지게
-    if (reviews?.length === 0) {
-      return;
-    }
-    setViewerIsEnlargement(!viewerIsEnlargement);
-  };
 
   //viewer의 표시될 내용을 정하기
   let viewerTitle = '';
@@ -60,6 +53,20 @@ const ReviewViewer = ({ placeId }) => {
       </div>
     );
   }
+
+  //viewer사이즈를 조절하는 핸들러
+  const handleViewerSize = () => {
+    //리뷰개수가 0개면 사이즈 못커지게
+    if (reviews?.length === 0) {
+      return;
+    }
+    setViewerIsEnlargement(!viewerIsEnlargement);
+  };
+
+  //리뷰쓰기 버튼을 클릭하면 카카오API 장소정보 수파베이스에추가
+  const handleClickAddLocation = async () => {
+    await createPlace(place);
+  };
 
   return (
     <>
@@ -101,7 +108,7 @@ const ReviewViewer = ({ placeId }) => {
 
         {/* 리뷰쓰러가기 버튼 */}
         <div className="fixed flex justify-end p-5 z-10 bottom-0 right-0">
-          <NavLink to={`/review-editor?placeId=${placeId}`}>
+          <NavLink to={`/review-editor?placeId=${place.placeId}`} onClick={handleClickAddLocation}>
             <div className="w-[80px] h-[80px] bg-red-500 rounded-full flex justify-center items-center text-[10px] text-white">
               리뷰쓰러가기
             </div>

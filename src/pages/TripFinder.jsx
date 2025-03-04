@@ -10,7 +10,7 @@ const TripFinder = () => {
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
 
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
-  const { selectedPlace, openReviewViewer } = useReviewStore();
+  const { openReviewViewer } = useReviewStore();
 
   useEffect(() => {
     if (window.kakao) {
@@ -59,7 +59,7 @@ const TripFinder = () => {
         <Youtube />
       </div>
 
-      {openReviewViewer && <ReviewViewer place={selectedPlace} />}
+      {openReviewViewer && <ReviewViewer />}
     </div>
   );
 };
