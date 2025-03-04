@@ -114,13 +114,13 @@ const Signup = () => {
       reader.readAsDataURL(file);
     }
   };
-  const marginSize = 40;
+  const MARGIN_SIZE = 40;
 
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex flex-col items-center p-20 mt-10 border border-fuchsia-400 rounded-lg">
         <h1>회원가입</h1>
-        <Spacer size={marginSize} />
+        <Spacer size={MARGIN_SIZE} />
         <form onSubmit={handleRegisterClick} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}>
           <div className="flex flex-col justify-center items-center">
             <UserImageUpload

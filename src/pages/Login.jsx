@@ -40,14 +40,14 @@ const Login = () => {
     setPassword(password);
   };
 
-  const marginSize = 40;
-  const marginSizeSmall = 20;
+  const MARGIN_SIZE = 40;
+  const MARGIN_SMALL_SIZE = 20;
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex flex-col items-center p-20 mt-10 border border-fuchsia-400 rounded-lg">
         <img src="/10go.png" alt="logo" style={{ width: '150px' }} />
         <h2>로그인</h2>
-        <Spacer size={marginSize} />
+        <Spacer size={MARGIN_SIZE} />
         <form onSubmit={handleLoginClick}>
           <UserConatiner>
             <UserLabel>ID</UserLabel>
@@ -62,7 +62,7 @@ const Login = () => {
             login
           </Button>
 
-          <Spacer size={marginSizeSmall} />
+          <Spacer size={MARGIN_SMALL_SIZE} />
           <div>
             계정이 없으신가요?
             <NavLink to="/signup" style={{ color: 'red' }}>
