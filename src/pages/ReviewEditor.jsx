@@ -16,7 +16,7 @@ import {
 import { PAGE } from '../constants/PageName';
 import { useEffect } from 'react';
 import useReviewStore from '../zustand/reviewStore';
-import { createPlace } from '../api/supabasePlaceApi';
+import { createPlace } from '../api/supabasePlaceAPI';
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
