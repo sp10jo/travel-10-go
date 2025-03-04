@@ -5,6 +5,7 @@ import ReactDOMServer from 'react-dom/server';
 import useReviewStore from '../../zustand/reviewStore';
 import useRegionStore from '../../zustand/regionStore';
 import { motion } from 'framer-motion';
+import Button from '../common/Button';
 
 const KakaoMap = () => {
   const DEFAULT_LAT = 33.450701;
@@ -31,6 +32,13 @@ const KakaoMap = () => {
   const [selectedCategory, setSelectedCategory] = useState('관광지');
   const [markers, setMarkers] = useState([]);
   const [hoveredMarker, setHoveredMarker] = useState(null);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [routeInfo, setRouteInfo] = useState({
+    start: null,
+    end: null,
+    via: [],
+  });
+
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
   const { setSelectedPlace, setOpenReviewViewer } = useReviewStore();
 
@@ -42,6 +50,17 @@ const KakaoMap = () => {
       size: { width: MARKER_SIZE, height: MARKER_SIZE },
     });
   }, []);
+
+  useEffect(() => {
+    if (!map) return;
+
+    window.kakao.maps.event.addListener(map, 'rightclick', (mouseEvent) => {
+      setContextMenu({
+        position: mouseEvent.latLng,
+        visible: true,
+      });
+    });
+  }, [map]);
 
   useEffect(() => {
     if (!map || !selectedRegion) return;
@@ -70,6 +89,76 @@ const KakaoMap = () => {
       }
     });
   }, [map, selectedCategory, selectedRegion]);
+
+  const handleSetStart = () => {
+    setRouteInfo({ ...routeInfo, start: contextMenu.position });
+    setContextMenu(null);
+  };
+
+  const handleSetEnd = () => {
+    setRouteInfo({ ...routeInfo, end: contextMenu.position });
+    setContextMenu(null);
+  };
+
+  const handleAddVia = () => {
+    setRouteInfo({
+      ...routeInfo,
+      via: [...routeInfo.via, contextMenu.position],
+    });
+    setContextMenu(null);
+  };
+
+  const getCarDirection = async () => {
+    const origin = `${routeInfo.start.lng},${routeInfo.start.lat}`;
+    const destination = `${routeInfo.end.lng},${routeInfo.end.lat}`;
+
+    const headers = {
+      Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_REST_KEY}`,
+      'Content-Type': 'application/json',
+    };
+
+    // URL 쿼리 파라미터 생성(출발지, 도착지)
+    const queryParams = new URLSearchParams({
+      origin: origin,
+      destination: destination,
+    });
+
+    const requestUrl = `${import.meta.env.VITE_KAKAO_MOBILITY_URL}?${queryParams}`;
+
+    try {
+      const response = await fetch(requestUrl, {
+        method: 'GET',
+        headers: headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const linePath = [];
+      data.routes[0].sections[0].roads.forEach((router) => {
+        router.vertexes.forEach((vertex, index) => {
+          // vertexes 배열의 length 값이 커서 짝수일 때에만 넣는다.
+          if (index % 2 === 0) {
+            linePath.push(new window.kakao.maps.LatLng(router.vertexes[index + 1], router.vertexes[index]));
+          }
+        });
+      });
+
+      const polyline = new window.kakao.maps.Polyline({
+        path: linePath,
+        strokeWeight: 5,
+        strokeColor: 'green',
+        strokeOpacity: 0.7,
+        strokeStyle: 'solid',
+      });
+      polyline.setMap(map);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div className="w-full h-full" id="map">
@@ -106,6 +195,10 @@ const KakaoMap = () => {
             onClick={() => {
               setSelectedPlace(marker);
               setOpenReviewViewer(true);
+              setContextMenu({
+                position: marker.position,
+                visible: true,
+              });
             }}
             onMouseOver={() => setHoveredMarker(marker)}
             onMouseOut={() => setHoveredMarker(null)}
@@ -128,8 +221,19 @@ const KakaoMap = () => {
             </div>
           </CustomOverlayMap>
         )}
+        {contextMenu && contextMenu.visible && (
+          <CustomOverlayMap position={contextMenu.position}>
+            <div className="bg-white border border-gray-300 p-2 rounded-lg shadow-lg">
+              <button onClick={handleSetStart}>출발지로 설정</button>
+              <button onClick={handleSetEnd}>도착지로 설정</button>
+              <button onClick={handleAddVia}>경유지로 설정</button>
+            </div>
+          </CustomOverlayMap>
+        )}
         <ZoomControl position={'RIGHT'} />
       </Map>
+
+      <Button onClick={getCarDirection}>경로 찾기</Button>
     </div>
   );
 };
