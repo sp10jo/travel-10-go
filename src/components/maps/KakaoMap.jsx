@@ -3,52 +3,94 @@ import { Map, MapMarker, ZoomControl, CustomOverlayMap } from 'react-kakao-maps-
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import ReactDOMServer from 'react-dom/server';
 import useReviewStore from '../../zustand/reviewStore';
+import useRegionStore from '../../zustand/regionStore';
 
-const KakaoMap = ({ region, markers }) => {
-  // 추후 region에 따라 값이 설정되도록 변경
-  const LATITUDE = 33.450701;
-  const LONGITUDE = 126.570667;
-  const ZOOM_LEVEL = 3;
-  const MARKER_OFFSET_Y = 1.2;
+const KakaoMap = () => {
+  const DEFAULT_LAT = 33.450701;
+  const DEFAULT_LNG = 126.570667;
+  const DEFAULT_ZOOM = 3;
+  const MARKER_OFFSET_Y = 1.6;
   const MARKER_SIZE = 30;
+
+  const categoryTags = [
+    { id: '관광지', name: '관광지', icon: '🏞️' },
+    { id: '맛집', name: '맛집', icon: '🍲' },
+    { id: '카페', name: '카페', icon: '☕' },
+    { id: '숙소', name: '숙소', icon: '🏨' },
+    { id: '쇼핑', name: '쇼핑', icon: '🛍️' },
+    { id: '문화시설', name: '문화시설', icon: '🏛️' },
+    { id: '체험', name: '체험', icon: '🧩' },
+    { id: '공원', name: '공원', icon: '🌳' },
+    { id: '엔터테인먼트', name: '엔터테인먼트', icon: '🎭' },
+    { id: '역사명소', name: '역사명소', icon: '🏯' },
+  ];
 
   const [map, setMap] = useState(null);
   const [markerImage, setMarkerImage] = useState(null);
-  const { selectedPlace, setSelectedPlace, setOpenReviewViewer } = useReviewStore();
+  const [selectedCategory, setSelectedCategory] = useState('관광지');
+  const [markers, setMarkers] = useState([]);
+  const [hoveredMarker, setHoveredMarker] = useState(null);
+  const selectedRegion = useRegionStore((state) => state.selectedRegion);
+  const { setSelectedPlace, setOpenReviewViewer } = useReviewStore();
 
-  // Favicon 아이콘을 svg 문자열로 변환해 DataURL로 만들어 이미지로 사용
   useEffect(() => {
     const svgString = ReactDOMServer.renderToString(<FaMapMarkerAlt size={MARKER_SIZE} color="red" />);
-
     const dataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
-
     setMarkerImage({
       src: dataUrl,
-      size: {
-        width: MARKER_SIZE,
-        height: MARKER_SIZE,
-      },
+      size: { width: MARKER_SIZE, height: MARKER_SIZE },
     });
   }, []);
 
   useEffect(() => {
-    if (!map || markers.length === 0) return;
+    if (!map || !selectedRegion) return;
 
-    const bounds = new window.kakao.maps.LatLngBounds();
+    const ps = new window.kakao.maps.services.Places();
+    const keyword = `${selectedRegion} ${selectedCategory}`;
 
-    markers.forEach((marker) => {
-      bounds.extend(new window.kakao.maps.LatLng(marker.position.lat, marker.position.lng));
+    ps.keywordSearch(keyword, (data, status) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const newMarkers = data.map((place) => ({
+          position: { lat: parseFloat(place.y), lng: parseFloat(place.x) },
+          content: place.place_name,
+          placeId: place.id,
+          addressName: place.address_name,
+        }));
+
+        setMarkers(newMarkers);
+
+        const bounds = new window.kakao.maps.LatLngBounds();
+        newMarkers.forEach((marker) =>
+          bounds.extend(new window.kakao.maps.LatLng(marker.position.lat, marker.position.lng))
+        );
+        map.setBounds(bounds);
+      }
     });
-
-    map.setBounds(bounds);
-  }, [map, markers]);
+  }, [map, selectedCategory, selectedRegion]);
 
   return (
     <div className="w-full h-full" id="map">
+      <div className="absolute p-2 z-10 rounded-lg">
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {categoryTags.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.name)}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap ${
+                selectedCategory === category.name
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {category.icon} {category.name}
+            </button>
+          ))}
+        </div>
+      </div>
       <Map
-        center={{ lat: LATITUDE, lng: LONGITUDE }}
+        center={{ lat: DEFAULT_LAT, lng: DEFAULT_LNG }}
         style={{ width: '100%', height: '100%' }}
-        level={ZOOM_LEVEL}
+        level={DEFAULT_ZOOM}
         onCreate={setMap}
       >
         {markers.map((marker, index) => (
@@ -59,16 +101,17 @@ const KakaoMap = ({ region, markers }) => {
               setSelectedPlace(marker);
               setOpenReviewViewer(true);
             }}
+            onMouseOver={() => setHoveredMarker(marker)}
+            onMouseOut={() => setHoveredMarker(null)}
             image={markerImage}
           />
         ))}
-
-        {selectedPlace && (
-          <CustomOverlayMap position={selectedPlace.position} yAnchor={MARKER_OFFSET_Y}>
-            <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-[300px] min-w-[150px] shadow-md text-center whitespace-normal">
-              <div>{selectedPlace.content}</div>
+        {hoveredMarker && (
+          <CustomOverlayMap position={hoveredMarker.position} yAnchor={MARKER_OFFSET_Y}>
+            <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-[300px] min-w-[200px] shadow-md text-center whitespace-normal">
+              <div className="line-clamp-2">{hoveredMarker.content}</div>
               <div
-                className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center z-10"
+                className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedPlace(null);
