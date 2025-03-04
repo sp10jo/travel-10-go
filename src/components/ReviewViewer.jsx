@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { useReviewsByPlaceIdQuery } from '../hooks/tanstack/useReviewsQuery';
 import ReviewCard from './ReviewCard';
 import { NavLink } from 'react-router-dom';
+import { getAverageReviewsRating } from '../utils/ratingUtils';
 
 const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
   //드로어의 크기를 변경하는 state 입니다
   const [viewerIsEnlargement, setViewerIsEnlargement] = useState(false);
 
   //확대됐을때의 추가되어 사용되는 뷰어클래스
-  const viewerClass = viewerIsEnlargement && 'w-[80%] flex flex-wrap content-start';
+  const viewerClass = viewerIsEnlargement ? 'w-[80%]' : 'w-[330px]';
 
   //훅으로 정의되어있는 텐스텍의 state와 data를 받아옵니다.
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
@@ -38,6 +39,25 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
     setViewerIsEnlargement(!viewerIsEnlargement);
   };
 
+  //viewer의 표시될 내용을 정하기
+  let viewerTitle = '';
+  const viewerTitleClass = 'text-2xl font-bold pl-3 pt-4';
+  //데이터가 안불러와졌을 때 뜨는 뷰어제목
+  if (isPending || isError) {
+    viewerTitle = (
+      <div className={viewerTitleClass}>{isPending ? '로딩중입니다.....' : `에러가발생했습니다 :: ${error}`}</div>
+    );
+  } else {
+    //데이터가 불러와졌을 때 뜨는 뷰어제목
+    viewerTitle = (
+      <div className={viewerTitleClass}>
+        {reviews.length > 0
+          ? reviews[0].places.place_name + getAverageReviewsRating(reviews)
+          : '리뷰가 없습니다 첫 리뷰를 작성해주세요'}
+      </div>
+    );
+  }
+
   return (
     <>
       <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
@@ -59,19 +79,21 @@ const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
           onClick={handleViewerSize}
         >
           {/* 리뷰뷰어 내용을 정하는 부분 */}
-          {isPending || isError ? (
-            //로딩중이거나 에러발생시 해당 메시지 띄우기
-            <div className="w-[300px]">{isPending ? '로딩중입니다.....' : `에러가발생했습니다 :: ${error}`}</div>
-          ) : //리뷰데이터 개수로 메시지 구분해서 띄우기
-          reviews?.length > 0 ? (
-            //리뷰데이터(array)로 카드 찍어내기
-            reviews.map((review) => {
-              return <ReviewCard key={review.id} review={review} />;
-            })
-          ) : (
-            //리뷰데이터가 0개면 안내 메시지 띄우기
-            <div className="w-[300px]">리뷰가 없습니다 첫 리뷰를 작성해주세요</div>
-          )}
+          {viewerTitle}
+          <div className=" flex flex-wrap content-start">
+            {
+              //리뷰데이터 개수로 메시지 구분해서 띄우기
+              reviews?.length > 0 ? (
+                //리뷰데이터(array)로 카드 찍어내기
+                reviews.map((review) => {
+                  return <ReviewCard key={review.id} review={review} />;
+                })
+              ) : (
+                //리뷰데이터가 0개면 안내 메시지 띄우기
+                <div className="w-[300px]"></div>
+              )
+            }
+          </div>
         </section>
 
         {/* 리뷰쓰러가기 버튼 */}
