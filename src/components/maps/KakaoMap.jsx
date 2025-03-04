@@ -4,6 +4,7 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import ReactDOMServer from 'react-dom/server';
 import useReviewStore from '../../zustand/reviewStore';
 import useRegionStore from '../../zustand/regionStore';
+import { motion } from 'framer-motion';
 
 const KakaoMap = () => {
   const DEFAULT_LAT = 33.450701;
@@ -72,10 +73,10 @@ const KakaoMap = () => {
 
   return (
     <div className="w-full h-full" id="map">
-      <div className="absolute p-2 z-10 rounded-lg">
-        <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="absolute p-2 z-10  w-full rounded-lg">
+        <div className="flex gap-3 w-full pb-1">
           {categoryTags.map((category) => (
-            <button
+            <motion.button
               key={category.id}
               onClick={() => setSelectedCategory(category.name)}
               className={`px-3 py-1 rounded-full text-sm whitespace-nowrap ${
@@ -83,9 +84,12 @@ const KakaoMap = () => {
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
+              initial={{ scale: 1 }}
+              animate={{ scale: selectedCategory === category.name ? 1.1 : 1 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
               {category.icon} {category.name}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
