@@ -164,3 +164,11 @@ export const insertImagePathToTable = async (dataId, uploadFilePath) => {
   });
   if (error) throw error;
 };
+
+//리뷰 값을 통한 테이블에 있는 이미지 삭제
+export const deleteImage = async (reviewId) => {
+  const { error } = await supabase.from(SUPABASE_TABLE_NAME.REVIEWS_IMG_PATH).delete().eq('review_id', reviewId);
+  if (error) {
+    throw error;
+  }
+};
