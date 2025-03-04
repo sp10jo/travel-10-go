@@ -9,7 +9,7 @@ const KakaoMap = () => {
   const DEFAULT_LAT = 33.450701;
   const DEFAULT_LNG = 126.570667;
   const DEFAULT_ZOOM = 3;
-  const MARKER_OFFSET_Y = 1.2;
+  const MARKER_OFFSET_Y = 1.5;
   const MARKER_SIZE = 30;
 
   const categoryTags = [
@@ -31,7 +31,7 @@ const KakaoMap = () => {
   const [markers, setMarkers] = useState([]);
   const [hoveredMarker, setHoveredMarker] = useState(null);
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
-  const { selectedPlace, setSelectedPlace, setOpenReviewViewer } = useReviewStore();
+  const { setSelectedPlace, setOpenReviewViewer } = useReviewStore();
 
   useEffect(() => {
     const svgString = ReactDOMServer.renderToString(<FaMapMarkerAlt size={MARKER_SIZE} color="red" />);
@@ -109,7 +109,7 @@ const KakaoMap = () => {
         {hoveredMarker && (
           <CustomOverlayMap position={hoveredMarker.position} yAnchor={MARKER_OFFSET_Y}>
             <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-[300px] min-w-[150px] shadow-md text-center whitespace-normal">
-              <div>{hoveredMarker.content}</div>
+              <div className="line-clamp-2">{hoveredMarker.content}</div>
               <div
                 className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center z-10"
                 onClick={(e) => {
