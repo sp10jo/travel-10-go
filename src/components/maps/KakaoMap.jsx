@@ -4,10 +4,10 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import ReactDOMServer from 'react-dom/server';
 import useReviewStore from '../../zustand/reviewStore';
 
-const KakaoMap = ({ region, markers }) => {
-  // 추후 region에 따라 값이 설정되도록 변경
-  const LATITUDE = 33.450701;
-  const LONGITUDE = 126.570667;
+const KakaoMap = ({ markers }) => {
+  // 초기값으로만 사용
+  const DEFAULT_LAT = 33.450701;
+  const DEFAULT_LNG = 126.570667;
   const ZOOM_LEVEL = 3;
   const MARKER_OFFSET_Y = 1.2;
   const MARKER_SIZE = 30;
@@ -46,7 +46,7 @@ const KakaoMap = ({ region, markers }) => {
   return (
     <div className="w-full h-full" id="map">
       <Map
-        center={{ lat: LATITUDE, lng: LONGITUDE }}
+        center={{ lat: DEFAULT_LAT, lng: DEFAULT_LNG }}
         style={{ width: '100%', height: '100%' }}
         level={ZOOM_LEVEL}
         onCreate={setMap}

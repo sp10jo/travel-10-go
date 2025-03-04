@@ -51,7 +51,7 @@ const TripFinder = () => {
     <div className="flex flex-col flex-1">
       {/* 상단 2/3 영역에 KakaoMap 배치 */}
       <div className="flex-[2] p-4">
-        <KakaoMap region={selectedRegion} markers={markers} />
+        <KakaoMap markers={markers} />
       </div>
 
       {/* 하단 1/3 영역에 Youtube 배치 */}
