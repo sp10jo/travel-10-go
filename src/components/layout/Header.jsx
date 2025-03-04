@@ -2,13 +2,15 @@ import Button from '../common/Button';
 import Avatar from '../common/Avatar';
 import useAuthStore from '../../zustand/authStore';
 import { Link } from 'react-router-dom';
+import useUser from '../../hooks/useUser';
 
 const Header = () => {
-  // ===== Test Data (추후 zustand 상태와 연결) =====
+  //주스탄드 연결
   const isLogin = useAuthStore((state) => state.isLogin);
   const user = useAuthStore((state) => state.user);
 
-  // =============================================
+  //로그아웃
+  const { logoutUser } = useUser();
 
   const AVATAR_SIZE = 50;
 
@@ -37,10 +39,7 @@ const Header = () => {
         ) : (
           <>
             <Button
-              onClick={() => {
-                useAuthStore.getState().setLogout();
-                localStorage.clear();
-              }}
+              onClick={() => logoutUser()}
               className="px-4 py-2 text-white bg-rose-500 rounded-lg hover:bg-rose-600 transition duration-300"
             >
               Logout
