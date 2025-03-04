@@ -45,7 +45,7 @@ const ReviewCard = ({ review }) => {
         //카드안에서 발생하는 이벤트가 전달되지 않게하기위해 버블링 막기
         e.stopPropagation();
       }}
-      className={`bg-white rounded-md shadow-sm overflow-hidden m-4 w-[300px] h-[400px] flex flex-col`}
+      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[400px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
     >
       <div className="flex items-center justify-between p-3 bg-white">
         <div className="flex items-center">
@@ -54,22 +54,10 @@ const ReviewCard = ({ review }) => {
         </div>
         {isMyReview && (
           <div className="flex gap-1">
-            <Button
-              onClick={onEditClick}
-              bgcolor="yellow"
-              textcolor="white"
-              size="2"
-              className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl"
-            >
+            <Button onClick={onEditClick} bgcolor="yellow" textcolor="white" size="1">
               수정
             </Button>
-            <Button
-              onClick={onDeleteClick}
-              bgcolor="red"
-              textcolor="white"
-              size="2"
-              className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl"
-            >
+            <Button onClick={onDeleteClick} bgcolor="red" textcolor="white" size="1">
               삭제
             </Button>
           </div>

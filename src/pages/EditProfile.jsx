@@ -12,7 +12,11 @@ const EditProfile = () => {
   const [newNickname, setNewNickname] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
 
-  const { data: userData, isLoading, error } = useQuery({
+  const {
+    data: userData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: () => getUserByUUID(user.id),
     enabled: !!user?.id,
@@ -92,7 +96,6 @@ const EditProfile = () => {
 
   return (
     <div className="flex flex-col items-center p-6">
-
       {/* 프로필 이미지 업로드 */}
       <div className="mb-4">
         <label className="cursor-pointer">
@@ -120,7 +123,7 @@ const EditProfile = () => {
       />
 
       {/* 저장 버튼 */}
-      <Button onClick={handleSaveProfile} className="mt-4 bg-green-500 text-white">
+      <Button onClick={handleSaveProfile} bgcolor="yellow" textcolor="white" size="2">
         수정하기
       </Button>
     </div>

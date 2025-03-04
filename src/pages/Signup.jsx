@@ -152,7 +152,7 @@ const Signup = () => {
                 name="id"
                 placeholder="아이디를 입력해주십시오."
               ></UserInput>
-              <Button size={1} onClick={handleIsIdExists} textcolor="black" bgcolor="white">
+              <Button size={1} onClick={handleIsIdExists} bgcolor="red" textcolor="white" size="1">
                 {isIdExists ? '확인완료' : '중복확인'}
               </Button>
             </div>
@@ -183,7 +183,7 @@ const Signup = () => {
                 name="nickname"
                 placeholder="닉네임을 입력해주십시오."
               ></UserInput>
-              <Button size={1} onClick={handleIsNickNameExists}>
+              <Button size={1} onClick={handleIsNickNameExists} bgcolor="red" textcolor="white" size="1">
                 {isNickNameExists ? '확인완료' : '중복확인'}
               </Button>
             </div>
@@ -192,7 +192,7 @@ const Signup = () => {
             </UserError>
           </UserConatiner>
           <div>
-            <Button size={1} type="submit">
+            <Button size={1} type="submit" bgcolor="skyblue" textcolor="white" size="2">
               회원가입
             </Button>
             <div>

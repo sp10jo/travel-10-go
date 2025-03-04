@@ -176,11 +176,13 @@ const ReviewEditor = () => {
           </select>
         </p>
         <div className="flex justify-center items-center gap-10">
-          <Button type="button" onClick={handleSendToBackClick}>
+          <Button type="button" onClick={handleSendToBackClick} bgcolor="gray" textcolor="white" size="2">
             뒤로 가기
           </Button>
           {/* 리뷰아이디 여부에 따라 수정/등록 버튼 보여주기 */}
-          <Button type="submit">{reviewId ? '수정' : '등록'}</Button>
+          <Button type="submit" bgcolor="yellow" textcolor="white" size="2">
+            {reviewId ? '수정' : '등록'}
+          </Button>
         </div>
       </form>
     </div>
