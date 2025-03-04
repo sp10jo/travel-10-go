@@ -10,13 +10,13 @@ const ReviewCard = ({ review }) => {
   const { id: CurrentUserId } = useAuthStore((store) => store.user);
 
   //리뷰삭제를 위한 mutate 함수를 불러옴
-  const deleteMutate = useDeleteReview(review.place_id);
+  const deleteMutate = useDeleteReview(review.place_id, CurrentUserId);
 
   //리뷰에 담겨있는 정보를 뽑아서 저장
   const avatarSrc = review.users.profile_img_path;
   const username = review.users.nickname;
   const content = `${review.content}`;
-  const footerText = review.places ? `${review.places.place_name} :: ${review.places.place_address}` : "장소 정보 없음";
+  const footerText = review.places ? `${review.places.place_name} :: ${review.places.place_address}` : '장소 정보 없음';
   //이미지데이터는 배열에 담겨서 넘어옴
   const imgArr = review.imgs;
 
