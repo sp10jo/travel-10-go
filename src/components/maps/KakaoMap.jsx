@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Map, MapMarker, ZoomControl, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import ReactDOMServer from 'react-dom/server';
+import useReviewStore from '../../zustand/reviewStore';
 
 const KakaoMap = ({ region, markers }) => {
   // 추후 region에 따라 값이 설정되도록 변경
@@ -14,6 +15,8 @@ const KakaoMap = ({ region, markers }) => {
   const [map, setMap] = useState(null);
   const [info, setInfo] = useState(null);
   const [markerImage, setMarkerImage] = useState(null);
+  const setPlaceId = useReviewStore((state) => state.setPlaceId);
+  const setOpenReviewViewer = useReviewStore((state) => state.setOpenReviewViewer);
 
   // Favicon 아이콘을 svg 문자열로 변환해 DataURL로 만들어 이미지로 사용
   useEffect(() => {
@@ -54,7 +57,11 @@ const KakaoMap = ({ region, markers }) => {
           <MapMarker
             key={`marker-${index}`}
             position={marker.position}
-            onClick={() => setInfo(marker)}
+            onClick={() => {
+              setInfo(marker);
+              setPlaceId(marker.content);
+              setOpenReviewViewer(true);
+            }}
             image={markerImage}
           />
         ))}
