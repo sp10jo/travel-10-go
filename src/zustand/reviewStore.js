@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
 const useReviewStore = create((set) => ({
-  placeId: '',
+  selectedPlace: null,
   openReviewViewer: false,
-  setPlaceId: (id) => set({ placeId: id, openReviewViewer: true }),
+  setSelectedPlace: (place) => set({ place, openReviewViewer: true }),
   setOpenReviewViewer: (open) => set({ openReviewViewer: open }),
 }));
 
