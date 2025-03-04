@@ -8,7 +8,7 @@ const KakaoMap = ({ region, markers }) => {
   const LATITUDE = 33.450701;
   const LONGITUDE = 126.570667;
   const ZOOM_LEVEL = 3;
-  const MARKER_OFFSET_Y = 1.5;
+  const MARKER_OFFSET_Y = 1.2;
   const MARKER_SIZE = 30;
 
   const [map, setMap] = useState(null);
@@ -61,7 +61,7 @@ const KakaoMap = ({ region, markers }) => {
 
         {info && (
           <CustomOverlayMap position={info.position} yAnchor={MARKER_OFFSET_Y}>
-            <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-xs min-w-[150px] shadow-md text-center">
+            <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-[300px] min-w-[150px] shadow-md text-center whitespace-normal">
               <div>{info.content}</div>
               <div
                 className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center z-10"
