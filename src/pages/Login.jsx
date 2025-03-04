@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from '../components/common/Button';
 import useUser from '../hooks/useUser';
 import { useNavigate } from 'react-router-dom';

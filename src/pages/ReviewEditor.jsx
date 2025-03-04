@@ -15,9 +15,12 @@ import {
 } from '../api/supabaseReviewsAPI';
 import { PAGE } from '../constants/PageName';
 import { useEffect } from 'react';
+import useReviewStore from '../zustand/reviewStore';
+import { createPlace } from '../api/supabasePlaceAPI';
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
+  const { place } = useReviewStore();
 
   // 상태관리
   const { user } = useAuthStore();
@@ -30,7 +33,6 @@ const ReviewEditor = () => {
 
   // url 파라미터로 placeId와 reviewId값 받아오기
   const [searchParams] = useSearchParams();
-  const [place, setPlaceId] = useState(searchParams.get('placeId'));
   const reviewId = searchParams.get('reviewId');
   // 수정버튼 클릭 시, 리뷰아이디로 해당 값 가져와서 렌더링
   useEffect(() => {
@@ -40,11 +42,9 @@ const ReviewEditor = () => {
       const UploadedimgArr = editData.imgs.map((img) => {
         return img.img_path;
       });
-
       setContent(editData.content);
       setStar(editData.star);
       setReviewImgs(UploadedimgArr);
-      setPlaceId(editData.place_id);
     };
     //쿼리스트링으로 reviewId가 넘어오면 데이터 불러와서 인풋창 set해주는 getReviewData()로직실행
     if (reviewId) {
@@ -71,10 +71,12 @@ const ReviewEditor = () => {
 
     if (isConfirm) {
       try {
+        //카카오 api에서 받아온 플레이스 정보를 수파베이스 플레이스 테이블에 등록
+        await createPlace(place);
         // 1. reviews 테이블에 저장하는 로직
         const reviewData = reviewId
-          ? await updateReviews(content, star, user.id, place, reviewId)
-          : await createReviews(content, star, user.id, place);
+          ? await updateReviews(content, star, user.id, place.placeId, reviewId)
+          : await createReviews(content, star, user.id, place.placeId);
 
         const dataId = reviewData.id;
 
@@ -114,6 +116,7 @@ const ReviewEditor = () => {
   return (
     <div className="flex flex-col justify-center items-center max-w-[400px] w-full mx-auto">
       {/* 리뷰아이디 여부에 따라 수정페이지/작성페이지로 보여주기 */}
+      <h3>{place.content}</h3>
       <h3>{reviewId ? '리뷰 수정 페이지' : '리뷰 작성 페이지'}</h3>
       <form onSubmit={handleAddSubmit}>
         <h4>Content</h4>

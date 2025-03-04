@@ -5,7 +5,6 @@ import ReviewCard from './ReviewCard';
 import { NavLink } from 'react-router-dom';
 import { getAverageReviewsRating } from '../utils/ratingUtils';
 import useReviewStore from '../zustand/reviewStore';
-import { createPlace } from '../api/supabasePlaceApi';
 
 const ReviewViewer = () => {
   //ReviewViewer가 열려있는 상태
@@ -63,11 +62,6 @@ const ReviewViewer = () => {
     setViewerIsEnlargement(!viewerIsEnlargement);
   };
 
-  //리뷰쓰기 버튼을 클릭하면 카카오API 장소정보 수파베이스에추가
-  const handleClickAddLocation = async () => {
-    await createPlace(place);
-  };
-
   return (
     <>
       <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
@@ -108,7 +102,7 @@ const ReviewViewer = () => {
 
         {/* 리뷰쓰러가기 버튼 */}
         <div className="fixed flex justify-end p-5 z-10 bottom-0 right-0">
-          <NavLink to={`/review-editor?placeId=${place.placeId}`} onClick={handleClickAddLocation}>
+          <NavLink to={`/review-editor`}>
             <div className="w-[80px] h-[80px] bg-red-500 rounded-full flex justify-center items-center text-[10px] text-white">
               리뷰쓰러가기
             </div>
