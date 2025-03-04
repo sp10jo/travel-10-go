@@ -51,6 +51,10 @@ const useUser = () => {
       alert('아이디는 4자 이상 20자 이하로 입력해주세요');
       return false;
     }
+    if (!isAlphaNumericOnly(id)) {
+      alert('아이디는 영문과 숫자만 입력해주세요');
+      return false;
+    }
 
     const { data, error } = await getUserById(id);
 
@@ -81,6 +85,10 @@ const useUser = () => {
     }
     return true;
   };
+
+  function isAlphaNumericOnly(str) {
+    return /^[A-Za-z0-9]+$/.test(str);
+  }
 
   const isUserNickNameExists = async (nickname) => {
     if (!checkString(nickname)) {
