@@ -7,13 +7,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getFilePath } from '../utils/getFilePath';
 import {
   createReviews,
+  deleteImage,
   getReviewsByReviewId,
   insertImagePathToTable,
   SUPABASE_TABLE_NAME,
   updateReviews,
   uploadImages,
 } from '../api/supabaseReviewsAPI';
-import { PAGE } from '../constants/PageName';
 import { useEffect } from 'react';
 import useReviewStore from '../zustand/reviewStore';
 import { createPlace } from '../api/supabasePlaceAPI';
@@ -44,6 +44,7 @@ const ReviewEditor = () => {
       });
       setContent(editData.content);
       setStar(editData.star);
+      setExistingImages(UploadedimgArr);
       setReviewImgs(UploadedimgArr);
     };
     //쿼리스트링으로 reviewId가 넘어오면 데이터 불러와서 인풋창 set해주는 getReviewData()로직실행
@@ -55,6 +56,11 @@ const ReviewEditor = () => {
   // 이미지 업데이트 함수
   const handleImagesChange = (images) => {
     setReviewImgs(images);
+  };
+
+  //이미지 수정 함수
+  const handleChange = (images) => {
+    setExistingImages(images);
   };
 
   // 뒤로가기 버튼 핸들러
@@ -80,18 +86,26 @@ const ReviewEditor = () => {
 
         const dataId = reviewData.id;
 
-        // 2. reviews_img_path 테이블에 저장하는 로직
-        if (reviewImgs.length > 0) {
-          for (const img of reviewImgs) {
-            //----------------------------------------------------------
-            // [임시방편] : 기존이미지 url이 supabase storage 경로일 경우, 이미지 빼고 나머지 수정 반영
-            if (typeof img === 'string' && img.startsWith('http')) {
-              alert('리뷰가 수정되었습니다.');
-              navigate(-1);
-              return;
-            }
-            //----------------------------------------------------------
+        //처음에 수정 값 undefined 방지
+        const existingImgs = existingImages || [];
+        // 2. reviews_img_path 테이블에 삭제 및 저장 === 수정
+        // 조건: 리뷰 수정 사진이 있을 경우 === 리뷰 사진 수정
+        if (reviewImgs.length > 0 && existingImgs.length > 0) {
+          // 2-0. 테이블에 연결된 이미지를 삭제합니다.
+          await deleteImage(reviewId);
+          for (const img of existingImgs) {
+            const filePath = getFilePath(img);
+            const uploadFilePath = `https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/${SUPABASE_TABLE_NAME.BUCKET_REVIEW_IMG}/${filePath}`;
 
+            // 2-1. 이미지 스토리지에 업로드
+            await uploadImages(filePath, img);
+
+            // 2-2. 스토리지에 업로드된 이미지 주소를 reviews_img_path 테이블에 저장
+            await insertImagePathToTable(dataId, uploadFilePath);
+          }
+        } else {
+          //리뷰 수정 사진은 없고 추가 사진은 있는 경우 === 리뷰 사진 추가
+          for (const img of reviewImgs) {
             const filePath = getFilePath(img);
             const uploadFilePath = `https://ysuwbzthjuzxaxblxwff.supabase.co/storage/v1/object/public/${SUPABASE_TABLE_NAME.BUCKET_REVIEW_IMG}/${filePath}`;
 
@@ -135,11 +149,7 @@ const ReviewEditor = () => {
         </h4>
         {/* 리뷰아이디 여부에 따라 업로드 컴포넌트 보여줄지와 기존이미지 보여줄지 판단 */}
         {reviewId && reviewImgs.length > 0 ? (
-          <div className="flex gap-2">
-            {reviewImgs.map((image) => (
-              <img className="w-[100px] h-[100px] object-cover rounded-lg" src={image} key={image} />
-            ))}
-          </div>
+          <ImgFileUploader maxImages={3} onImagesChange={handleChange} />
         ) : (
           // 기존 이미지가 없거나 새글 작성할 시에 보여줄 이미지 업로드 기능
           <ImgFileUploader maxImages={3} onImagesChange={handleImagesChange} />
