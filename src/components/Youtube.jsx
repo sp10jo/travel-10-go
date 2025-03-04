@@ -15,7 +15,6 @@ const Youtube = () => {
       // 2. API 중 v3 api사용 주소: https://www.googleapis.com/youtube/v3
       // 3. 검색을 위해 api에서 제공하는 /search 사용
       // 검색만 진행하니 주소를 따로 빼지 않았습니다.
-      console.log(selectedRegion);
       const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
         params: {
           part: 'snippet', //snippet을 설정하는 경우 API 응답은 하위 속성도 모두 포함
@@ -54,7 +53,6 @@ const Youtube = () => {
         {
           //isLoding 이 true인 초기에 값이 비었기에 []를 map해서 오류 막음 + []라서 페이지에 나타나지 않습니다.
           //api로 값이 받아오고 isLoding 이 false가 되면 페이지에 나타냅니다.
-
           //플레이리스트 링크 형태: https://www.youtube.com/embed/?list = + playlistId
           (videos || []).map((video) => (
             //aspect-video : 비디오 비율 overflow-hidden : 넘기지 않게 숨기기기
