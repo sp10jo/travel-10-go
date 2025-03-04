@@ -39,10 +39,10 @@ const RegionCard = ({ region, onClick, className = '' }) => {
       }}
     >
       {/* 검정색 오버레이 (기본 투명, hover 시 불투명) */}
-      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-skyblue opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
 
       {/* 지역 이름 */}
-      <div className="flex items-center justify-center w-full h-full text-yellow-300 group-hover:text-white text-2xl font-bold z-20 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+      <div className="flex items-center justify-center w-full h-full text-yellow group-hover:text-white text-2xl font-bold z-20 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
         {region}
       </div>
     </Link>

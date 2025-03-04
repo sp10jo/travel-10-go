@@ -38,10 +38,7 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Button
-              onClick={() => logoutUser()}
-              className="px-4 py-2 text-white bg-rose-500 rounded-lg hover:bg-rose-600 transition duration-300"
-            >
+            <Button onClick={() => logoutUser()} bgcolor="red" textcolor="white" size="2">
               Logout
             </Button>
             <Link to={'/my-page'}>

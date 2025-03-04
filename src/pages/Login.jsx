@@ -1,13 +1,20 @@
 import Button from '../components/common/Button';
 import useUser from '../hooks/useUser';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useAuthStore from '../zustand/authStore';
 import { useEffect } from 'react';
+import Spacer from '../components/common/Spacer';
+import UserConatiner from '../components/user/UserConatiner';
+import UserLabel from '../components/user/UserLabel';
+import UserInput from '../components/user/UserInput';
+import { useState } from 'react';
 
 const Login = () => {
-  const { loginUserBySupabase, logoutUser } = useUser();
+  const { loginUserBySupabase } = useUser();
   const navigate = useNavigate();
   const isLogin = useAuthStore((s) => s.isLogin);
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (isLogin) {
@@ -23,29 +30,47 @@ const Login = () => {
     }
   };
 
-  const handleLogOutClick = async () => {
-    const res = await logoutUser();
-    if (res) {
-      navigate('/');
-    }
+  const handleOnChangeId = (e) => {
+    const id = e.target.value;
+    setId(id);
   };
+
+  const handleOnChangePassword = (e) => {
+    const password = e.target.value;
+    setPassword(password);
+  };
+
+  const MARGIN_SIZE = 40;
+  const MARGIN_SMALL_SIZE = 20;
   return (
-    <div>
-      <h1>login</h1>
-      <form onSubmit={handleLoginClick}>
-        <div>
-          <label>id</label>
-          <input type="text" name="id"></input>
-        </div>
-        <div>
-          <label>password</label>
-          <input type="password" name="password"></input>
-        </div>
-        <Button type="submit">login</Button>
-        <Button type="button" onClick={handleLogOutClick}>
-          logout
-        </Button>
-      </form>
+    <div className="flex flex-col items-center p-4">
+      <div className="flex flex-col items-center p-20 mt-10 border border-fuchsia-400 rounded-lg">
+        <img src="/10go.png" alt="logo" style={{ width: '150px' }} />
+        <h2>로그인</h2>
+        <Spacer size={MARGIN_SIZE} />
+        <form onSubmit={handleLoginClick}>
+          <UserConatiner>
+            <UserLabel>ID</UserLabel>
+            <UserInput type="text" name="id" value={id} onChange={handleOnChangeId}></UserInput>
+          </UserConatiner>
+          <UserConatiner>
+            <UserLabel>PASSWORD</UserLabel>
+            <UserInput type="password" name="password" value={password} onChange={handleOnChangePassword}></UserInput>
+          </UserConatiner>
+
+          <Button type="submit" bgcolor="skyblue" textcolor="white" size="2">
+            login
+          </Button>
+
+          <Spacer size={MARGIN_SMALL_SIZE} />
+          <div>
+            계정이 없으신가요?
+            <NavLink to="/signup" style={{ color: 'red' }}>
+              회원가입
+            </NavLink>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

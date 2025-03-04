@@ -19,10 +19,6 @@ const useUser = () => {
       alert('이미지 파일만 업로드 가능합니다');
       return false;
     }
-    if (!checkStringLength(password, 8, 20)) {
-      alert('비밀번호는 8자 이상 20자 이하로 입력해주세요');
-      return false;
-    }
 
     const userData = {
       email,
@@ -43,19 +39,6 @@ const useUser = () => {
   };
 
   const isUserIdExists = async (id) => {
-    if (!checkString(id)) {
-      alert('아이디를 입력해주세요');
-      return false;
-    }
-    if (!checkStringLength(id, 4, 20)) {
-      alert('아이디는 4자 이상 20자 이하로 입력해주세요');
-      return false;
-    }
-    if (!isAlphaNumericOnly(id)) {
-      alert('아이디는 영문과 숫자만 입력해주세요');
-      return false;
-    }
-
     const { data, error } = await getUserById(id);
 
     if (error) {
@@ -86,19 +69,11 @@ const useUser = () => {
     return true;
   };
 
-  function isAlphaNumericOnly(str) {
+  const isAlphaNumericOnly = (str) => {
     return /^[A-Za-z0-9]+$/.test(str);
-  }
+  };
 
   const isUserNickNameExists = async (nickname) => {
-    if (!checkString(nickname)) {
-      alert('닉네임을 입력해주세요');
-      return false;
-    }
-    if (!checkStringLength(nickname, 2, 20)) {
-      alert('닉네임은 2자 이상 20자 이하로 입력해주세요');
-      return false;
-    }
     const { data, error } = await getUserByNickName(nickname);
 
     if (error) {
@@ -146,7 +121,16 @@ const useUser = () => {
     return true;
   };
 
-  return { registerUserBySupabase, isUserIdExists, logoutUser, isUserNickNameExists, loginUserBySupabase };
+  return {
+    registerUserBySupabase,
+    isUserIdExists,
+    logoutUser,
+    isUserNickNameExists,
+    loginUserBySupabase,
+    checkStringLength,
+    checkString,
+    isAlphaNumericOnly,
+  };
 };
 
 export default useUser;
