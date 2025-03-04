@@ -3,10 +3,17 @@ import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import ImgFileUploader from '../components/common/ImgFileUploader';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getFilePath } from '../utils/getFilePath';
-import { createReviews, insertImagePathToTable, SUPABASE_TABLE_NAME, uploadImages } from '../api/supabaseReviewsAPI';
+import {
+  createReviews,
+  getReviewsByReviewId,
+  insertImagePathToTable,
+  SUPABASE_TABLE_NAME,
+  uploadImages,
+} from '../api/supabaseReviewsAPI';
 import { PAGE } from '../constants/PageName';
+import { useEffect } from 'react';
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
@@ -18,7 +25,26 @@ const ReviewEditor = () => {
   // ImgFileUploader로 받아온 이미지 배열로 저장
   const [reviewImgs, setReviewImgs] = useState([]);
   // 현재 없는 place_id 정보는 null값으로 지정 (추후 데이터 테이블 연동)
-  const place = null;
+  const [searchParams] = useSearchParams();
+
+  const [place, setPlaceId] = useState(searchParams.get('placeId'));
+  const reviewId = searchParams.get('reviewId');
+  useEffect(() => {
+    const getReviewData = async () => {
+      const data = await getReviewsByReviewId(reviewId);
+      const imgArr = data[0].imgs.map((img) => {
+        return img.img_path;
+      });
+      setContent(data[0].content);
+      setStar(data[0].star);
+      setReviewImgs(imgArr);
+      setPlaceId(data.placeId);
+    };
+    //쿼리스트링으로 reviewId가 넘어오면 데이터 불러와서 인풋창 set해주는 getReviewData()로직실행
+    if (reviewId) {
+      getReviewData();
+    }
+  }, []);
 
   // 이미지 업데이트 함수
   const handleImagesChange = (images) => {
