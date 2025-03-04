@@ -62,7 +62,7 @@ const ReviewViewer = () => {
 
   return (
     <>
-      <section className="fixed z-50 w-[100%] h-[100%] top-[60px] flex">
+      <section className="fixed z-50 w-[100%] h-[100%] top-[80px] flex">
         {/* 리뷰뷰어 바깥영역 클릭시 리뷰뷰어 닫힘 */}
         <div
           className="flex-1 h-[100%]"
@@ -72,7 +72,15 @@ const ReviewViewer = () => {
         ></div>
 
         {/* 리뷰뷰어 크기 확대/축소 이벤트 영역 */}
-        <div className="bg-red-400 overflow-y-auto h-[100%] w-[30px]" onClick={handleViewerSize}></div>
+        <div className="h-[100%] flex flex-col justify-center">
+          <div
+            className="w-[40px] h-[80px] bg-halfcircle_blue rounded-l-full -translate-y-[80px] flex flex-col justify-center items-end"
+            onClick={handleViewerSize}
+          >
+            <p className="text-white">{viewerIsEnlargement ? 'Close' : 'Open'} </p>
+            <p className="text-halfcircle_pink">Click</p>
+          </div>
+        </div>
 
         {/* 리뷰뷰어*/}
         <section
@@ -100,8 +108,8 @@ const ReviewViewer = () => {
         {/* 리뷰쓰러가기 버튼 */}
         <div className="fixed flex justify-end p-5 z-10 bottom-0 right-0">
           <NavLink to={`/review-editor`}>
-            <div className="w-[80px] h-[80px] bg-red-500 rounded-full flex justify-center items-center text-[10px] text-white">
-              리뷰쓰러가기
+            <div className="w-[80px] h-[80px] bg-red rounded-full flex justify-center items-center text-[10px] text-white">
+              리뷰 쓰러 가기
             </div>
           </NavLink>
         </div>
