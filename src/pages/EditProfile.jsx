@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import Avatar from '../components/common/Avatar'; // Avatar 추가
+import Avatar from '../components/common/Avatar';
 import useAuthStore from '../zustand/authStore';
 import { getUserByUUID, updateUser, uploadProfileImage } from '../api/supabaseUsersAPI';
 import { useQuery } from '@tanstack/react-query';
@@ -12,11 +12,7 @@ const EditProfile = () => {
   const [newNickname, setNewNickname] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
 
-  const {
-    data: userData,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: userData, isLoading, error } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: () => getUserByUUID(user.id),
     enabled: !!user?.id,
@@ -50,7 +46,15 @@ const EditProfile = () => {
   };
 
   const handleSaveProfile = async () => {
-    if (!user) return;
+    if (!newNickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    if (!newProfileImage && !previewImage) {
+      alert('프로필 이미지를 선택해주세요.');
+      return;
+    }
 
     let uploadedImagePath = userData?.profile_img_path || null;
 
@@ -88,7 +92,6 @@ const EditProfile = () => {
 
   return (
     <div className="flex flex-col items-center p-6">
-      <h2 className="text-xl font-bold mb-4">프로필 수정</h2>
 
       {/* 프로필 이미지 업로드 */}
       <div className="mb-4">
