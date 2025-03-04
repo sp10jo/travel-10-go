@@ -1,37 +1,32 @@
+import Spacer from '../components/common/Spacer';
 import RegionCard from '../components/RegionCard';
+import { MAIN_LOCATION } from '../constants/Location';
 
 const Home = () => {
-  const main_select = [
-    '서울특별시',
-    '부산광역시',
-    '대구광역시',
-    '인천광역시',
-    '광주광역시',
-    '대전광역시',
-    '울산광역시',
-    '경기도',
-    '강원도',
-    '충청북도',
-    '충청남도',
-    '전라북도',
-    '전라남도',
-    '경상북도',
-    '경상남도',
-    '제주특별자치도',
-  ];
+  const handleQuestionClick = () => {
+    alert('2025.05.10일 서비스 예정입니다.');
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="fixed top-36 right-5 transform -translate-y-1/2">
-        <button className="bg-blue-950 px-3 py-3 text-white rounded-md hover:bg-blue-100 hover:text-pink-950 transition-colors">
+    <div className="flex flex-col items-center justify-center bg-sky-50">
+      <div className="fixed top-36 right-5 transform -translate-y-1/2 z-30">
+        <button
+          onClick={handleQuestionClick}
+          className="bg-blue-950 px-3 py-3 text-white rounded-md hover:bg-blue-100 hover:text-pink-950 transition-colors"
+        >
           나의 여행 스타일 찾기 ➤
         </button>
       </div>
+      <Spacer size={50} />
       <h3 className="flex">여행하고 싶은 지역을 선택해주세요!</h3>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {main_select.map((region) => (
+      <Spacer size={100} />
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {MAIN_LOCATION.map((region) => (
           <RegionCard key={region} region={region} />
         ))}
       </div>
+      <Spacer size={100} />
     </div>
   );
 };

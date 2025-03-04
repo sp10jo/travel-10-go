@@ -85,7 +85,7 @@ const ReviewEditor = () => {
             // [임시방편] : 기존이미지 url이 supabase storage 경로일 경우, 이미지 빼고 나머지 수정 반영
             if (typeof img === 'string' && img.startsWith('http')) {
               alert('리뷰가 수정되었습니다.');
-              navigate(PAGE.TEST);
+              navigate(-1);
               return;
             }
             //----------------------------------------------------------
@@ -103,7 +103,7 @@ const ReviewEditor = () => {
 
         // 3. 리뷰 등록 후 완료 alert 및 리뷰 보고 있던 페이지로 이동
         reviewId ? alert('리뷰가 수정되었습니다.') : alert('리뷰가 등록되었습니다.');
-        navigate(PAGE.TEST);
+        navigate(-1);
       } catch (error) {
         alert('데이터 입력 요청이 실패하였습니다. 지속된 요청 실패 시 고객센터로 문의바랍니다.');
         console.error(error);
