@@ -18,7 +18,6 @@ const useAuthListener = () => {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === AUTH_EVENTS.SIGNED_IN && session?.user) {
-        console.log(session.access_token);
         getUserByUUID(session.user.id).then((res) => {
           setLogin(res.data, session.access_token);
         });
