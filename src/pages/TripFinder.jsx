@@ -3,14 +3,17 @@ import ReviewViewer from '../components/ReviewViewer';
 import KakaoMap from '../components/maps/KakaoMap';
 import useRegionStore from '../zustand/regionStore';
 import Youtube from '../components/Youtube';
+import useReviewStore from '../zustand/reviewStore';
 
 const TripFinder = () => {
-  const [openReviewViewer, setOpenReviewViewer] = useState(false); // 태진님과 작업 예정
-  const [placeId, setPlaceId] = useState(''); // 태진님과 작업 예정
+  // const [openReviewViewer, setOpenReviewViewer] = useState(false); // 태진님과 작업 예정
+  // const [placeId, setPlaceId] = useState(''); // 태진님과 작업 예정
+  const { placeId } = useReviewStore();
   const [markers, setMarkers] = useState([]);
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
 
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
+  const openReviewViewer = useReviewStore((state) => state.openReviewViewer);
 
   useEffect(() => {
     if (window.kakao) {
@@ -34,9 +37,11 @@ const TripFinder = () => {
         let markers = [];
 
         for (let i = 0; i < data.length; i++) {
+          console.log(data[i]);
           markers.push({
             position: { lat: data[i].y, lng: data[i].x },
             content: data[i].place_name,
+            placeId: data[i].id,
           });
         }
 
@@ -57,7 +62,7 @@ const TripFinder = () => {
         <Youtube />
       </div>
 
-      {openReviewViewer && <ReviewViewer placeId={placeId} setOpenReviewViewer={setOpenReviewViewer} />}
+      {openReviewViewer && <ReviewViewer placeId={placeId} />}
     </div>
   );
 };
