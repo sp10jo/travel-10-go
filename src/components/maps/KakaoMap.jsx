@@ -29,6 +29,7 @@ const KakaoMap = () => {
   const [markerImage, setMarkerImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('관광지');
   const [markers, setMarkers] = useState([]);
+  const [hoveredMarker, setHoveredMarker] = useState(null);
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
   const { selectedPlace, setSelectedPlace, setOpenReviewViewer } = useReviewStore();
 
@@ -100,13 +101,15 @@ const KakaoMap = () => {
               setSelectedPlace(marker);
               setOpenReviewViewer(true);
             }}
+            onMouseOver={() => setHoveredMarker(marker)}
+            onMouseOut={() => setHoveredMarker(null)}
             image={markerImage}
           />
         ))}
-        {selectedPlace && (
-          <CustomOverlayMap position={selectedPlace.position} yAnchor={MARKER_OFFSET_Y}>
+        {hoveredMarker && (
+          <CustomOverlayMap position={hoveredMarker.position} yAnchor={MARKER_OFFSET_Y}>
             <div className="relative bg-white border border-gray-300 rounded-md p-2.5 pr-6 text-sm text-gray-700 max-w-[300px] min-w-[150px] shadow-md text-center whitespace-normal">
-              <div>{selectedPlace.content}</div>
+              <div>{hoveredMarker.content}</div>
               <div
                 className="absolute top-1 right-1 cursor-pointer text-gray-400 leading-none h-4 w-4 text-center z-10"
                 onClick={(e) => {
