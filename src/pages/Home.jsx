@@ -1,8 +1,17 @@
+import { useEffect } from 'react';
 import Spacer from '../components/common/Spacer';
 import RegionCard from '../components/RegionCard';
 import { MAIN_LOCATION } from '../constants/Location';
+import useReviewStore from '../zustand/reviewStore';
 
 const Home = () => {
+  const { setCloseReviewViewer } = useReviewStore();
+
+  useEffect(() => {
+    //홈이마운트되면 전역에서관리중이던 place정보초기화
+    setCloseReviewViewer();
+  }, []);
+
   const handleQuestionClick = () => {
     alert('2025.05.10일 서비스 예정입니다.');
   };

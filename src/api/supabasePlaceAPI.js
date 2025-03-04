@@ -15,7 +15,6 @@ export const createPlace = async (place) => {
     .from(SUPABASE_TABLE_NAME.PLACES)
     .upsert([{ id, place_name, place_address }], { onConflict: ['id'] });
   if (error) {
-    //id중복(똑같은장소추가) 때문에 발생한 에러는 에러로 처리하지 않음
-    if (error.code !== '23505') throw error;
+    throw error;
   }
 };
