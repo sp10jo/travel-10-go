@@ -19,6 +19,11 @@ const useUser = () => {
       return false;
     }
 
+    if (checkStringLength(password, 8, 20)) {
+      alert('비밀번호는 8자 이상 20자 이하로 입력해주세요');
+      return false;
+    }
+
     const userData = {
       email,
       id,
@@ -38,6 +43,15 @@ const useUser = () => {
   };
 
   const isUserIdExists = async (id) => {
+    if (!checkString(id)) {
+      alert('아이디를 입력해주세요');
+      return false;
+    }
+    if (!checkStringLength(id, 4, 20)) {
+      alert('아이디는 4자 이상 20자 이하로 입력해주세요');
+      return false;
+    }
+
     const { data, error } = await getUserById(id);
 
     if (error) {
@@ -54,7 +68,29 @@ const useUser = () => {
     return true;
   };
 
+  const checkString = (str) => {
+    if (str === null || str === undefined || str === '' || str.includes(' ')) {
+      return false;
+    }
+    return true;
+  };
+
+  const checkStringLength = (str, min, max) => {
+    if (str.length < min || str.length > max) {
+      return false;
+    }
+    return true;
+  };
+
   const isUserNickNameExists = async (nickname) => {
+    if (!checkString(nickname)) {
+      alert('닉네임을 입력해주세요');
+      return false;
+    }
+    if (!checkStringLength(nickname, 2, 20)) {
+      alert('닉네임은 2자 이상 20자 이하로 입력해주세요');
+      return false;
+    }
     const { data, error } = await getUserByNickName(nickname);
 
     if (error) {
