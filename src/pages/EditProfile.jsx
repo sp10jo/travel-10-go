@@ -46,7 +46,9 @@ const EditProfile = () => {
     if (newProfileImage) {
       try {
         const { data } = await uploadProfileImage(newProfileImage);
-        uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${data.path}`;
+        uploadedImagePath = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${
+          data.path
+        }`;
       } catch (error) {
         alert('프로필 이미지 업로드 실패');
         return;
@@ -54,7 +56,7 @@ const EditProfile = () => {
     }
 
     const updatedUserData = {
-      newNickname,
+      nickname: newNickname,
       profile_img_path: uploadedImagePath,
     };
 
@@ -88,9 +90,10 @@ const EditProfile = () => {
       {/* 닉네임 수정 가능하도록 수정 */}
       <Input
         type="text"
+        placeholder="변경할 닉네임을 입력해주세요."
         value={newNickname}
         onChange={(e) => setNewNickname(e.target.value)}
-        className="w-64 text-center"
+        className="w-64 text-center text-xs"
       />
 
       {/* 저장 버튼 */}
