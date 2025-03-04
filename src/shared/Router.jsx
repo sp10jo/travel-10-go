@@ -27,10 +27,11 @@ const Router = () => {
               <Route path="/review-editor" element={<ReviewEditor />} />
               <Route path="/test" element={<TestPage />} />
             </Route>
-          </Route>
-          <Route element={<PublicRoute />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
