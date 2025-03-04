@@ -233,7 +233,6 @@ const KakaoMap = () => {
         style={{ width: '100%', height: '100%' }}
         level={DEFAULT_ZOOM}
         onCreate={setMap}
-        onClick={() => setContextMenu(null)}
       >
         {markers.map((marker, index) => (
           <MapMarker
