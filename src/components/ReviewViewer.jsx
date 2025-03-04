@@ -4,13 +4,16 @@ import { useReviewsByPlaceIdQuery } from '../hooks/tanstack/useReviewsQuery';
 import ReviewCard from './ReviewCard';
 import { NavLink } from 'react-router-dom';
 import { getAverageReviewsRating } from '../utils/ratingUtils';
+import useReviewStore from '../zustand/reviewStore';
 
-const ReviewViewer = ({ placeId, setOpenReviewViewer }) => {
+const ReviewViewer = ({ placeId }) => {
   //드로어의 크기를 변경하는 state 입니다
   const [viewerIsEnlargement, setViewerIsEnlargement] = useState(false);
+  //ReviewViewer가 열려있는 상태
+  const { setOpenReviewViewer } = useReviewStore();
 
   //확대됐을때의 추가되어 사용되는 뷰어클래스
-  const viewerClass = viewerIsEnlargement ? 'w-[80%]' : 'w-[330px]';
+  const viewerClass = viewerIsEnlargement && 'w-[80%] flex flex-wrap content-start';
 
   //훅으로 정의되어있는 텐스텍의 state와 data를 받아옵니다.
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
