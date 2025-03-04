@@ -52,17 +52,6 @@ const KakaoMap = () => {
   }, []);
 
   useEffect(() => {
-    if (!map) return;
-
-    window.kakao.maps.event.addListener(map, 'rightclick', (mouseEvent) => {
-      setContextMenu({
-        position: mouseEvent.latLng,
-        visible: true,
-      });
-    });
-  }, [map]);
-
-  useEffect(() => {
     if (!map || !selectedRegion) return;
 
     setMarkers([]);
@@ -160,6 +149,18 @@ const KakaoMap = () => {
     }
   };
 
+  const handleMarkerCreate = (marker) => {
+    window.kakao.maps.event.addListener(marker, 'rightclick', () => {
+      const position = marker.getPosition();
+      const lat = position.getLat();
+      const lng = position.getLng();
+      setContextMenu({
+        position: { lat: lat, lng: lng },
+        visible: true,
+      });
+    });
+  };
+
   return (
     <div className="w-full h-full" id="map">
       <div className="absolute p-2 z-10  w-full rounded-lg">
@@ -195,14 +196,11 @@ const KakaoMap = () => {
             onClick={() => {
               setSelectedPlace(marker);
               setOpenReviewViewer(true);
-              setContextMenu({
-                position: marker.position,
-                visible: true,
-              });
             }}
             onMouseOver={() => setHoveredMarker(marker)}
             onMouseOut={() => setHoveredMarker(null)}
             image={markerImage}
+            onCreate={(marker) => handleMarkerCreate(marker)}
           />
         ))}
         {hoveredMarker && (
@@ -223,10 +221,10 @@ const KakaoMap = () => {
         )}
         {contextMenu && contextMenu.visible && (
           <CustomOverlayMap position={contextMenu.position}>
-            <div className="bg-white border border-gray-300 p-2 rounded-lg shadow-lg">
-              <button onClick={handleSetStart}>출발지로 설정</button>
-              <button onClick={handleSetEnd}>도착지로 설정</button>
-              <button onClick={handleAddVia}>경유지로 설정</button>
+            <div className="flex flex-col bg-white border border-gray-300 rounded-lg shadow-lg">
+              <Button onClick={handleSetStart}>출발지로 설정</Button>
+              <Button onClick={handleSetEnd}>도착지로 설정</Button>
+              <Button onClick={handleAddVia}>경유지로 설정</Button>
             </div>
           </CustomOverlayMap>
         )}
