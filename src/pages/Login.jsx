@@ -58,7 +58,9 @@ const Login = () => {
             <UserInput type="password" name="password" value={password} onChange={handleOnChangePassword}></UserInput>
           </UserConatiner>
 
-          <Button type="submit">login</Button>
+          <Button type="submit" bgcolor="skyblue" textcolor="white" size="2">
+            login
+          </Button>
 
           <Spacer size={marginSizeSmall} />
           <div>

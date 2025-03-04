@@ -72,7 +72,7 @@ const ReviewViewer = () => {
         ></div>
 
         {/* 리뷰뷰어 크기 확대/축소 이벤트 영역 */}
-        <div className="h-[100%] flex flex-col justify-center">
+        <div className="h-[100%] flex flex-col justify-center cursor-pointer">
           <div
             className="w-[40px] h-[80px] bg-halfcircle_blue rounded-l-full -translate-y-[80px] flex flex-col justify-center items-end"
             onClick={handleViewerSize}
