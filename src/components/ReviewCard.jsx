@@ -16,7 +16,7 @@ const ReviewCard = ({ review }) => {
   const avatarSrc = review.users.profile_img_path;
   const username = review.users.nickname;
   const content = `${review.content}`;
-  const footerText = `${review.places.place_name} :: ${review.places.place_address}`;
+  const footerText = review.places ? `${review.places.place_name} :: ${review.places.place_address}` : "장소 정보 없음";
   //이미지데이터는 배열에 담겨서 넘어옴
   const imgArr = review.imgs;
 

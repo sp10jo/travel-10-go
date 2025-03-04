@@ -90,7 +90,6 @@ export const updateUser = async (userId, updatedData) => {
   }
 
   if (Object.keys(updatePayload).length === 0) {
-    console.warn('⚠️ 변경된 데이터가 없어 업데이트를 실행하지 않음.');
     return { error: null };
   }
 

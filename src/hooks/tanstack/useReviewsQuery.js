@@ -13,7 +13,7 @@ export const useReviewsByPlaceIdQuery = (placeId) => {
 //user_id를 기준으로 리뷰 데이터들을 가져옵니다
 export const useReviewsByUserIdQuery = (userId) => {
   return useQuery({
-    muaFn: () => getReviewsByUserId(userId),
+    queryFn: () => getReviewsByUserId(userId),
     queryKey: [QUERY_KEY.REVIEWS, `${userId}`],
   });
 };

@@ -14,7 +14,7 @@ const MyPage = () => {
       <div className="flex items-center space-x-4 mb-6">
         <Avatar src={user?.profile_img_path} size={60} className="w-16 h-16" />
         <div>
-          <p className="text-lg font-semibold">{user?.nickname || '사용자'}</p>
+          <p className="text-lg font-semibold">{user?.nickname || '익명'}</p>
           <p className="text-sm text-gray-500">마이페이지에 오신 것을 환영합니다.</p>
         </div>
       </div>
