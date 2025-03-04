@@ -13,7 +13,7 @@ const ReviewViewer = ({ placeId }) => {
   const { setOpenReviewViewer } = useReviewStore();
 
   //확대됐을때의 추가되어 사용되는 뷰어클래스
-  const viewerClass = viewerIsEnlargement && 'w-[80%] flex flex-wrap content-start';
+  const viewerClass = viewerIsEnlargement ? 'w-[80%]' : 'w-[330px]';
 
   //훅으로 정의되어있는 텐스텍의 state와 data를 받아옵니다.
   //data : 쿼리로요청한 리뷰데이터들이 담겨있습니다.
