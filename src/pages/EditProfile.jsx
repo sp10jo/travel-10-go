@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import Avatar from '../components/common/Avatar'; // Avatar 추가
 import useAuthStore from '../zustand/authStore';
 import { getUserByUUID, updateUser, uploadProfileImage } from '../api/supabaseUsersAPI';
 import { useQuery } from '@tanstack/react-query';
@@ -9,7 +10,7 @@ const EditProfile = () => {
   const { user } = useAuthStore();
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [newNickname, setNewNickname] = useState('');
-  const [previewImage, setPreviewImage] = useState(user?.profile_img_path || '/default-avatar.png'); // 미리보기 이미지
+  const [previewImage, setPreviewImage] = useState(null);
 
   const {
     data: userData,
@@ -22,7 +23,7 @@ const EditProfile = () => {
     onSuccess: (data) => {
       if (data) {
         setNewNickname(data.nickname || '');
-        setPreviewImage(data.profile_img_path || '/default-avatar.png'); // 기존 이미지 설정
+        setPreviewImage(data.profile_img_path || null);
       }
     },
   });
@@ -51,7 +52,7 @@ const EditProfile = () => {
   const handleSaveProfile = async () => {
     if (!user) return;
 
-    let uploadedImagePath = userData?.profile_img_path || '/default-avatar.png';
+    let uploadedImagePath = userData?.profile_img_path || null;
 
     if (newProfileImage) {
       try {
@@ -78,6 +79,10 @@ const EditProfile = () => {
 
     // zustand 상태 업데이트
     useAuthStore.getState().setLogin({ ...user, profile_img_path: uploadedImagePath, nickname: newNickname });
+
+    // 닉네임 입력창 초기화
+    setNewNickname('');
+
     alert('프로필이 수정되었습니다!');
   };
 
@@ -88,11 +93,15 @@ const EditProfile = () => {
       {/* 프로필 이미지 업로드 */}
       <div className="mb-4">
         <label className="cursor-pointer">
-          <img
-            src={previewImage} // 미리보기 이미지 반영
-            alt="프로필 이미지"
-            className="w-24 h-24 rounded-full object-cover border"
-          />
+          {previewImage || user.profile_img_path ? (
+            <img
+              src={previewImage || user.profile_img_path} // 기존 프로필 이미지 또는 미리보기 반영
+              alt="프로필 이미지"
+              className="w-24 h-24 rounded-full object-cover border"
+            />
+          ) : (
+            <Avatar size={96} alt="기본 프로필" /> // 프로필 이미지 없을 때만 Avatar 사용
+          )}
           <input type="file" className="hidden" onChange={handleImageChange} />
         </label>
       </div>
