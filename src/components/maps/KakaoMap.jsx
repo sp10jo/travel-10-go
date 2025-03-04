@@ -180,8 +180,8 @@ const KakaoMap = () => {
 
   return (
     <div className="w-full h-full" id="map">
-      <div className="absolute p-2 z-10  w-full rounded-lg">
-        <div className="flex gap-3 w-full pb-1">
+      <div className="absolute p-2 z-10 w-full rounded-lg">
+        <div className="flex gap-3 w-full pb-1 mb-4">
           {categoryTags.map((category) => (
             <motion.button
               key={category.id}
@@ -189,7 +189,7 @@ const KakaoMap = () => {
               className={`px-3 py-1 rounded-full text-sm whitespace-nowrap ${
                 selectedCategory === category.name
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-card_border_gray text-gray-700 hover:bg-lightgray'
               }`}
               initial={{ scale: 1 }}
               animate={{ scale: selectedCategory === category.name ? 1.1 : 1 }}
@@ -199,6 +199,10 @@ const KakaoMap = () => {
             </motion.button>
           ))}
         </div>
+
+        <Button onClick={getCarDirection} bgcolor="transparentgray">
+          경로 찾기
+        </Button>
       </div>
       <Map
         center={{ lat: DEFAULT_LAT, lng: DEFAULT_LNG }}
@@ -239,17 +243,21 @@ const KakaoMap = () => {
         )}
         {contextMenu && contextMenu.visible && (
           <CustomOverlayMap position={contextMenu.position} xAnchor={CONTEXT_OFFSET_X} yAnchor={CONTEXT_OFFSET_Y}>
-            <div className="flex flex-col bg-white border border-gray-300 rounded-lg shadow-lg">
-              <Button onClick={handleSetStart}>출발지로 설정</Button>
-              <Button onClick={handleSetEnd}>도착지로 설정</Button>
-              <Button onClick={handleAddVia}>경유지로 설정</Button>
+            <div className="flex flex-col bg-white border border-gray rounded-lg">
+              <Button onClick={handleSetStart}>
+                <span className="mr-2">🏁</span> 출발지
+              </Button>
+              <Button onClick={handleSetEnd}>
+                <span className="mr-2">🎯</span> 도착지
+              </Button>
+              <Button onClick={handleAddVia}>
+                <span className="mr-2">📍</span> 경유지
+              </Button>
             </div>
           </CustomOverlayMap>
         )}
         <ZoomControl position={'RIGHT'} />
       </Map>
-
-      <Button onClick={getCarDirection}>경로 찾기</Button>
     </div>
   );
 };
