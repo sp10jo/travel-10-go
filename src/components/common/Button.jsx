@@ -5,19 +5,16 @@ const Button = ({ onClick, children, type = 'button', size = 2, textcolor = 'bla
     3: 'px-6 py-3 text-lg', // 큰 사이즈
   };
   const bgClasses = {
-    blue: 'bg-blue-500 hover:bg-blue-700',
-    green: 'bg-green-500 hover:bg-green-700',
-    red: 'bg-red-500 hover:bg-red-700',
-    gray: 'bg-gray-500 hover:bg-gray-700',
-    yellow: 'bg-yellow-500 hover:bg-yellow-700',
-    black: 'bg-black hover:bg-gray-900',
-    white: 'bg-white hover:bg-gray-200',
+    skyblue: 'bg-skyblue hover:bg-blue-700',
+    green: 'bg-green hover:bg-green-700',
+    red: 'bg-button_red_delete hover:bg-red-700',
+    gray: 'bg-gray hover:bg-gray-700',
+    yellow: 'bg-button_yellow_update hover:bg-yellow-700',
   };
 
   const textClass = {
     white: 'text-white',
     black: 'text-black',
-    blue: 'text-blue-500',
   };
 
   return (
