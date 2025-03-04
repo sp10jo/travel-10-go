@@ -41,6 +41,7 @@ const KakaoMap = () => {
     via: [],
   });
   const [polyline, setPolyline] = useState(null);
+  const [routeSummary, setRouteSummary] = useState({ distance: 0, duration: 0 });
 
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
   const { setSelectedPlace, setOpenReviewViewer } = useReviewStore();
@@ -154,6 +155,19 @@ const KakaoMap = () => {
 
       const data = await response.json();
 
+      let totalDistance = 0;
+      let totalDuration = 0;
+
+      data.routes[0].sections.forEach((section) => {
+        totalDistance += section.distance;
+        totalDuration += section.duration;
+      });
+
+      setRouteSummary({
+        distance: (totalDistance / 1000).toFixed(1), // km 변환
+        duration: Math.ceil(totalDuration / 60), // 분 변환
+      });
+
       const linePath = [];
       data.routes[0].sections.forEach((section) => {
         section.roads.forEach((router) => {
@@ -227,6 +241,13 @@ const KakaoMap = () => {
         <Button onClick={getCarDirection} bgcolor="transparentgray">
           경로 찾기
         </Button>
+
+        {routeSummary.distance > 0 && (
+          <div className="absolute top-28 left-2 p-2 bg-white rounded-lg shadow-md text-sm text-gray-700">
+            🚗 총 거리: <span className="font-bold">{routeSummary.distance} km</span> | ⏳ 예상 시간:{' '}
+            <span className="font-bold">{routeSummary.duration} 분</span>
+          </div>
+        )}
       </div>
       <Map
         center={{ lat: DEFAULT_LAT, lng: DEFAULT_LNG }}
