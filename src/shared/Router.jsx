@@ -7,7 +7,6 @@ import MyReview from '../pages/MyReview';
 import EditProfile from '../pages/EditProfile';
 import TripFinder from '../pages/TripFinder';
 import ReviewEditor from '../pages/ReviewEditor';
-import TestPage from '../pages/TestPage';
 import MainLayout from '../components/layout/MainLayout';
 import useAuthStore from '../zustand/authStore';
 
@@ -25,7 +24,6 @@ const Router = () => {
               </Route>
               <Route path="/trip-finder" element={<TripFinder />} />
               <Route path="/review-editor" element={<ReviewEditor />} />
-              <Route path="/test" element={<TestPage />} />
             </Route>
 
             <Route element={<PublicRoute />}>

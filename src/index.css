@@ -90,3 +90,19 @@ p {
     font-size: 20px;
   }
 }
+@layer components {
+  .slide-left {
+    animation: slide-left 0.5s ease-out forwards;
+  }
+
+  @keyframes slide-left {
+    0% {
+      transform: translateX(100%); /* 오른쪽에서 시작 */
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0); /* 왼쪽으로 이동 */
+      opacity: 1;
+    }
+  }
+}
