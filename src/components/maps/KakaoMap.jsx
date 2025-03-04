@@ -13,6 +13,8 @@ const KakaoMap = () => {
   const DEFAULT_ZOOM = 3;
   const MARKER_OFFSET_Y = 1.6;
   const MARKER_SIZE = 30;
+  const CONTEXT_OFFSET_X = -0.1;
+  const CONTEXT_OFFSET_Y = 0;
 
   const categoryTags = [
     { id: '관광지', name: '관광지', icon: '🏞️' },
@@ -38,6 +40,7 @@ const KakaoMap = () => {
     end: null,
     via: [],
   });
+  const [polyline, setPolyline] = useState(null);
 
   const selectedRegion = useRegionStore((state) => state.selectedRegion);
   const { setSelectedPlace, setOpenReviewViewer } = useReviewStore();
@@ -98,8 +101,14 @@ const KakaoMap = () => {
   };
 
   const getCarDirection = async () => {
+    if (!routeInfo.start || !routeInfo.end) {
+      alert('출발지와 도착지를 설정해 주세요.');
+      return;
+    }
+
     const origin = `${routeInfo.start.lng},${routeInfo.start.lat}`;
     const destination = `${routeInfo.end.lng},${routeInfo.end.lat}`;
+    const viaPoints = routeInfo.via.map((via) => `${via.lng},${via.lat}`).join('|');
 
     const headers = {
       Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_REST_KEY}`,
@@ -110,6 +119,7 @@ const KakaoMap = () => {
     const queryParams = new URLSearchParams({
       origin: origin,
       destination: destination,
+      waypoints: viaPoints,
     });
 
     const requestUrl = `${import.meta.env.VITE_KAKAO_MOBILITY_URL}?${queryParams}`;
@@ -127,23 +137,30 @@ const KakaoMap = () => {
       const data = await response.json();
 
       const linePath = [];
-      data.routes[0].sections[0].roads.forEach((router) => {
-        router.vertexes.forEach((vertex, index) => {
-          // vertexes 배열의 length 값이 커서 짝수일 때에만 넣는다.
-          if (index % 2 === 0) {
-            linePath.push(new window.kakao.maps.LatLng(router.vertexes[index + 1], router.vertexes[index]));
-          }
+      data.routes[0].sections.forEach((section) => {
+        section.roads.forEach((router) => {
+          router.vertexes.forEach((_vertex, index) => {
+            if (index % 2 === 0) {
+              linePath.push(new window.kakao.maps.LatLng(router.vertexes[index + 1], router.vertexes[index]));
+            }
+          });
         });
       });
 
-      const polyline = new window.kakao.maps.Polyline({
+      if (polyline) {
+        polyline.setMap(null);
+      }
+
+      const newPolyline = new window.kakao.maps.Polyline({
         path: linePath,
         strokeWeight: 5,
         strokeColor: 'green',
         strokeOpacity: 0.7,
         strokeStyle: 'solid',
       });
-      polyline.setMap(map);
+
+      newPolyline.setMap(map);
+      setPolyline(newPolyline);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -196,6 +213,7 @@ const KakaoMap = () => {
             onClick={() => {
               setSelectedPlace(marker);
               setOpenReviewViewer(true);
+              setContextMenu(null);
             }}
             onMouseOver={() => setHoveredMarker(marker)}
             onMouseOut={() => setHoveredMarker(null)}
@@ -220,7 +238,7 @@ const KakaoMap = () => {
           </CustomOverlayMap>
         )}
         {contextMenu && contextMenu.visible && (
-          <CustomOverlayMap position={contextMenu.position}>
+          <CustomOverlayMap position={contextMenu.position} xAnchor={CONTEXT_OFFSET_X} yAnchor={CONTEXT_OFFSET_Y}>
             <div className="flex flex-col bg-white border border-gray-300 rounded-lg shadow-lg">
               <Button onClick={handleSetStart}>출발지로 설정</Button>
               <Button onClick={handleSetEnd}>도착지로 설정</Button>
