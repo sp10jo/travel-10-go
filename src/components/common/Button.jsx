@@ -5,11 +5,11 @@ const Button = ({ onClick, children, type = 'button', size = 2, textcolor = 'bla
     3: 'px-6 py-3 text-lg', // 큰 사이즈
   };
   const bgClasses = {
-    skyblue: 'bg-skyblue hover:bg-[#F1F1FF]',
-    green: 'bg-green hover:bg-[#EDFDE9]',
-    red: 'bg-button_red_delete hover:bg-[#FFE2E7]',
-    gray: 'bg-gray hover:bg-[#D9D9D9]',
-    yellow: 'bg-button_yellow_update hover:bg-[#FFF0DA]',
+    skyblue: 'bg-skyblue hover:bg-[#F1F1FF] hover:text-skyblue',
+    green: 'bg-green hover:bg-[#EDFDE9] hover:text-green',
+    red: 'bg-button_red_delete hover:bg-[#FFE2E7] hover:text-button_red_delete',
+    gray: 'bg-gray hover:bg-[#D9D9D9] hover:text-gray',
+    yellow: 'bg-button_yellow_update hover:bg-[#FFF0DA] hover:text-button_yellow_update',
   };
 
   const textClass = {
@@ -21,7 +21,7 @@ const Button = ({ onClick, children, type = 'button', size = 2, textcolor = 'bla
     <button
       type={type}
       onClick={onClick}
-      className={`${sizeClasses[size]} ${textClass[textcolor]} border-t rounded ${bgClasses[bgcolor]} shadow-md`}
+      className={`${sizeClasses[size]} ${textClass[textcolor]} rounded ${bgClasses[bgcolor]} shadow-md`}
     >
       {children}
     </button>
