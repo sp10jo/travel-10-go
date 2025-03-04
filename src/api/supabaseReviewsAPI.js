@@ -6,6 +6,7 @@ export const SUPABASE_TABLE_NAME = {
   REVIEWS: 'reviews',
   REVIEWS_IMG_PATH: 'reviews_img_path',
   BUCKET_REVIEW_IMG: 'review-img',
+  PLACES: 'places',
 };
 
 /**
@@ -110,14 +111,13 @@ export const updateReviews = async (content, star, userId, place, reviewId) => {
       content,
       star,
       user_id: userId,
-      place_id: place
+      place_id: place,
     })
     .select()
     .single();
   if (error) throw error;
   return data;
 };
-
 
 /**
  * title: 리뷰 작성하기
@@ -132,7 +132,7 @@ export const createReviews = async (content, star, userId, place) => {
       content,
       star,
       user_id: userId,
-      place_id: place
+      place_id: place,
     })
     .select()
     .single();

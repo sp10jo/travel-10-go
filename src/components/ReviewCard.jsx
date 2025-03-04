@@ -52,10 +52,18 @@ const ReviewCard = ({ review }) => {
         </div>
         {isMyReview && (
           <div className="flex gap-1">
-            <Button onClick={onEditClick} className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl">
+            <Button
+              onClick={onEditClick}
+              bgcolor="blue"
+              className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl"
+            >
               수정
             </Button>
-            <Button onClick={onDeleteClick} className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl">
+            <Button
+              onClick={onDeleteClick}
+              bgcolor="yellow"
+              className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl"
+            >
               삭제
             </Button>
           </div>
