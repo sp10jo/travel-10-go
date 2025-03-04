@@ -1,14 +1,13 @@
 import Button from '../common/Button';
 import Avatar from '../common/Avatar';
+import useAuthStore from '../../zustand/authStore';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   // ===== Test Data (추후 zustand 상태와 연결) =====
-  const isLogin = false;
-  const user = {
-    name: 'test',
-    profileImage:
-      'https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-female-user-profile-vector-illustration-isolated-background-women-profile-sign-business-concept_157943-38866.jpg?w=740',
-  };
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const user = useAuthStore((state) => state.user);
+
   // =============================================
 
   const AVATAR_SIZE = 50;
@@ -37,10 +36,18 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Button className="px-4 py-2 text-white bg-rose-500 rounded-lg hover:bg-rose-600 transition duration-300">
+            <Button
+              onClick={() => {
+                useAuthStore.getState().setLogout();
+                localStorage.clear();
+              }}
+              className="px-4 py-2 text-white bg-rose-500 rounded-lg hover:bg-rose-600 transition duration-300"
+            >
               Logout
             </Button>
-            <Avatar src={user.profileImage} size={AVATAR_SIZE} />
+            <Link to={'/my-page'}>
+              <Avatar src={user.profile_img_path} size={AVATAR_SIZE} />
+            </Link>
           </>
         )}
       </div>
