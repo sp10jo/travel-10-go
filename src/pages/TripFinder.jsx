@@ -37,10 +37,11 @@ const TripFinder = () => {
         let markers = [];
 
         for (let i = 0; i < data.length; i++) {
+          console.log(data[i]);
           markers.push({
             position: { lat: data[i].y, lng: data[i].x },
             content: data[i].place_name,
-            placeId: data[i].placeId,
+            placeId: data[i].id,
           });
         }
 

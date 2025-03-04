@@ -59,7 +59,9 @@ const KakaoMap = ({ region, markers }) => {
             position={marker.position}
             onClick={() => {
               setInfo(marker);
-              setPlaceId(marker.content);
+              console.log(marker);
+              console.log(marker.placeId);
+              setPlaceId(marker.placeId);
               setOpenReviewViewer(true);
             }}
             image={markerImage}
