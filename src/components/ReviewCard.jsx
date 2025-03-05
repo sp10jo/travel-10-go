@@ -75,7 +75,7 @@ const ReviewCard = ({ review }) => {
         })}
       </div>
       <div className="p-4 flex-1">
-        <p className="text-l break-words">{content}</p>
+        <p className="text-l break-words overflow-y-auto h-[90px]">{content}</p>
       </div>
       <div className="pl-4 text-lg">{makeRationStar(review.star)}</div>
       {footerText && (
