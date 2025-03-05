@@ -2,38 +2,15 @@ import { getUserById, getUserByNickName, login, logout, registerUser } from '../
 import useAuthStore from '../zustand/authStore';
 
 const useUser = () => {
-  const registerUserBySupabase = async (e) => {
-    const email = e.target.email.value;
-    const id = e.target.id.value;
-    const password = e.target.password.value;
-    const nickname = e.target.nickname.value;
-    const profile_img = e.target.profile_img.files[0];
-    console.log(password);
-
-    if (!email || !id || !password || !nickname) {
-      alert('모든 항목을 입력해주세요');
-      return false;
-    }
-
-    if (profile_img && profile_img.type !== 'image/jpeg' && profile_img.type !== 'image/png') {
-      alert('이미지 파일만 업로드 가능합니다');
-      return false;
-    }
-
-    const userData = {
-      email,
-      id,
-      password,
-      nickname,
-      profile_img,
-    };
-
-    const { error } = await registerUser(userData);
+  const setLogin = useAuthStore((state) => state.setLogin);
+  const registerUserBySupabase = async (userData) => {
+    const { insertData, signUpData, error } = await registerUser(userData);
 
     if (error) {
       alert('회원가입에 실패했습니다 : ' + error.message);
       return false;
     }
+    setLogin(insertData, signUpData.session.access_token);
     alert('회원가입에 성공했습니다');
     return true;
   };

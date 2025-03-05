@@ -9,6 +9,8 @@ const Header = () => {
   const isLogin = useAuthStore((state) => state.isLogin);
   const user = useAuthStore((state) => state.user);
 
+  console.log(user);
+
   //로그아웃
   const { logoutUser } = useUser();
 
@@ -42,7 +44,7 @@ const Header = () => {
               Logout
             </Button>
             <Link to={'/my-page'}>
-              <Avatar src={user.profile_img_path} size={AVATAR_SIZE} />
+              {user?.profile_img_path && <Avatar src={user.profile_img_path} size={AVATAR_SIZE} />}
             </Link>
           </>
         )}
