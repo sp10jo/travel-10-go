@@ -71,40 +71,42 @@ const ReviewViewer = () => {
           }}
         ></div>
 
-        {/* 리뷰뷰어 크기 확대/축소 이벤트 영역 */}
-        <div className="h-[100%] flex flex-col justify-center cursor-pointer">
-          <div
-            className="w-[40px] h-[80px] bg-halfcircle_blue rounded-l-full -translate-y-[80px] flex flex-col justify-center items-end"
+        {/* 리뷰뷰어 */}
+        <div className={`flex ${viewerClass} slide-left`}>
+          {/* 리뷰뷰어 확대/축소버튼 */}
+          <div className="h-[100%] flex flex-col justify-center cursor-pointer">
+            <div
+              className="w-[40px] h-[80px] bg-halfcircle_blue rounded-l-full -translate-y-[80px] flex flex-col justify-center items-end"
+              onClick={handleViewerSize}
+            >
+              <p className="text-white text-[15px]">{viewerIsEnlargement ? 'Close' : 'Open'} </p>
+              <p className="text-halfcircle_pink text-[15px]">Click</p>
+            </div>
+          </div>
+
+          {/* 리뷰뷰어 메인영역*/}
+          <section
+            className={`bg-skyblue bg-opacity-50 overflow-y-auto h-[100%] pb-[150px] w-[100%]`}
             onClick={handleViewerSize}
           >
-            <p className="text-white">{viewerIsEnlargement ? 'Close' : 'Open'} </p>
-            <p className="text-halfcircle_pink">Click</p>
-          </div>
+            {/* 리뷰뷰어 내용을 정하는 부분 */}
+            {viewerTitle}
+            <div className=" flex flex-wrap content-start">
+              {
+                //리뷰데이터 개수로 메시지 구분해서 띄우기
+                reviews?.length > 0 ? (
+                  //리뷰데이터(array)로 카드 찍어내기
+                  reviews.map((review) => {
+                    return <ReviewCard key={review.id} review={review} />;
+                  })
+                ) : (
+                  //리뷰데이터가 0개면 안내 메시지 띄우기
+                  <div className="w-[300px]"></div>
+                )
+              }
+            </div>
+          </section>
         </div>
-
-        {/* 리뷰뷰어*/}
-        <section
-          className={`bg-skyblue bg-opacity-50 overflow-y-auto h-[100%] pb-[150px] ${viewerClass}`}
-          onClick={handleViewerSize}
-        >
-          {/* 리뷰뷰어 내용을 정하는 부분 */}
-          {viewerTitle}
-          <div className=" flex flex-wrap content-start">
-            {
-              //리뷰데이터 개수로 메시지 구분해서 띄우기
-              reviews?.length > 0 ? (
-                //리뷰데이터(array)로 카드 찍어내기
-                reviews.map((review) => {
-                  return <ReviewCard key={review.id} review={review} />;
-                })
-              ) : (
-                //리뷰데이터가 0개면 안내 메시지 띄우기
-                <div className="w-[300px]"></div>
-              )
-            }
-          </div>
-        </section>
-
         {/* 리뷰쓰러가기 버튼 */}
         <div className="fixed flex justify-end p-5 z-10 bottom-0 right-0">
           <NavLink to={`/review-editor`}>
