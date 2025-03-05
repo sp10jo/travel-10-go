@@ -45,7 +45,7 @@ const ReviewCard = ({ review }) => {
         //카드안에서 발생하는 이벤트가 전달되지 않게하기위해 버블링 막기
         e.stopPropagation();
       }}
-      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[400px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
+      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[450px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
     >
       <div className="flex items-center justify-between p-3 bg-white">
         <div className="flex items-center">
@@ -69,13 +69,13 @@ const ReviewCard = ({ review }) => {
             <img
               src={img.img_path}
               key={img.id + review.id}
-              className="w-[200px] h-[200px] object-cover object-center"
+              className="w-[175px] h-[175px] object-cover object-center"
             ></img>
           );
         })}
       </div>
       <div className="p-4 flex-1">
-        <p className="text-sm break-words">{content}</p>
+        <p className="text-l break-words">{content}</p>
       </div>
       <div className="pl-4 text-lg">{makeRationStar(review.star)}</div>
       {footerText && (

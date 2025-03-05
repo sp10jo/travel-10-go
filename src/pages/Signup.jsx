@@ -23,7 +23,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [img, setImg] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
   const [isEmail, setIsEmail] = useState(false);
@@ -45,11 +45,22 @@ const Signup = () => {
       alert('중복확인을 해주세요');
       return;
     }
+    if (img && img.type !== 'image/jpeg' && img.type !== 'image/png') {
+      alert('이미지 파일만 업로드 가능합니다');
+      return false;
+    }
+    const userData = {
+      email,
+      id,
+      password,
+      nickname,
+      img,
+    };
 
-    const isSucsess = await registerUserBySupabase(e);
+    const isSucsess = await registerUserBySupabase(userData);
 
     if (isSucsess) {
-      navigate('/login');
+      navigate('/');
     }
   };
 
@@ -95,7 +106,7 @@ const Signup = () => {
   };
   const handleOnChangeNickName = (e) => {
     const value = e.target.value;
-    setNickName(value);
+    setNickname(value);
     if (checkStringLength(value, 2, 20) && checkString(value)) {
       setIsNickName(true);
     }
@@ -152,12 +163,14 @@ const Signup = () => {
                 name="id"
                 placeholder="아이디를 입력해주십시오."
               ></UserInput>
-              <Button size={1} onClick={handleIsIdExists} bgcolor="red" textcolor="white" size="1">
+              <Button size={1} onClick={handleIsIdExists} bgcolor="red" textcolor="white">
                 {isIdExists ? '확인완료' : '중복확인'}
               </Button>
             </div>
             <UserError>
-              {isId ? '사용가능한 아이디입니다.' : '아이디는 4~20자의 영문 대소문자와 숫자만 사용 가능합니다.'}
+              {isId
+                ? '사용가능한 아이디입니다. 중복확인 버튼을 눌러주세요.'
+                : '아이디는 4~20자의 영문 대소문자와 숫자만 사용 가능합니다.'}
             </UserError>
           </UserConatiner>
           <UserConatiner>
@@ -178,21 +191,23 @@ const Signup = () => {
             <div>
               <UserInput
                 onChange={handleOnChangeNickName}
-                value={nickName}
+                value={nickname}
                 type="text"
                 name="nickname"
                 placeholder="닉네임을 입력해주십시오."
               ></UserInput>
-              <Button size={1} onClick={handleIsNickNameExists} bgcolor="red" textcolor="white" size="1">
+              <Button size={1} onClick={handleIsNickNameExists} bgcolor="red" textcolor="white">
                 {isNickNameExists ? '확인완료' : '중복확인'}
               </Button>
             </div>
             <UserError>
-              {isNickName ? '사용가능한 닉네임입니다.' : '닉네임은 2~20자의 문자열만 사용가능합니다.'}
+              {isNickName
+                ? '사용가능한 닉네임입니다. 중복확인 버튼을 눌러주세요. '
+                : '닉네임은 2~20자의 문자열만 사용가능합니다.'}
             </UserError>
           </UserConatiner>
           <div>
-            <Button size={1} type="submit" bgcolor="skyblue" textcolor="white" size="2">
+            <Button size={1} type="submit" bgcolor="skyblue" textcolor="white">
               회원가입
             </Button>
             <div>
