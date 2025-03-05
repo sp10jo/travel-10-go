@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import NavLink from '../components/common/NavLink';
 import useAuthStore from '../zustand/authStore';
@@ -7,11 +7,14 @@ import Avatar from '../components/common/Avatar';
 const MyPage = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // 마이페이지 진입 시 기본적으로 '마이리뷰' 페이지로 이동
+  // 마이페이지 진입 시 기본적으로로 '마이리뷰' 페이지로 이동
   useEffect(() => {
-    navigate('my-review');
-  }, [navigate]);
+    if (location.pathname === '/my-page') {
+      navigate('my-review');
+    }
+  }, [navigate, location.pathname]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
