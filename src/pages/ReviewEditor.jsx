@@ -17,6 +17,14 @@ import {
 import { useEffect } from 'react';
 import useReviewStore from '../zustand/reviewStore';
 import { createPlace } from '../api/supabasePlaceAPI';
+import Spacer from '../components/common/Spacer';
+
+const spacerSize = {
+  sm: 10,
+  md: 20,
+  lg: 30,
+  xl: 50,
+};
 
 const ReviewEditor = () => {
   const navigate = useNavigate();
@@ -128,10 +136,11 @@ const ReviewEditor = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center max-w-[400px] w-full mx-auto">
+    <div className="flex flex-col justify-center p-20 mt-10 items-center w-full mx-auto">
       {/* 리뷰아이디 여부에 따라 수정페이지/작성페이지로 보여주기 */}
-      <h3>{place.content}</h3>
+      <h3 className="text-skyblue">{place.content}</h3>
       <h3>{reviewId ? '리뷰 수정 페이지' : '리뷰 작성 페이지'}</h3>
+      <Spacer size={spacerSize.lg} />
       <form onSubmit={handleAddSubmit}>
         <h4>Content</h4>
         <div>
@@ -139,14 +148,11 @@ const ReviewEditor = () => {
             placeholder="리뷰는 300자 이하로 작성해주세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            textsize="text-md"
           />
         </div>
 
-        <h4>
-          {reviewId
-            ? '내가 올린 사진 보기 (이미지를 다시 첨부하고 싶다면 리뷰를 새로 작성해주세요!)'
-            : '이미지 업로드하기 (최대 3장)'}
-        </h4>
+        <h4>{reviewId ? '이미지 업로드하기 (사진을 다시 첨부해주세요!)' : '이미지 업로드하기 (최대 3장)'}</h4>
         {/* 리뷰아이디 여부에 따라 업로드 컴포넌트 보여줄지와 기존이미지 보여줄지 판단 */}
         {reviewId && reviewImgs.length > 0 ? (
           <ImgFileUploader maxImages={3} onImagesChange={handleChange} />
@@ -154,7 +160,7 @@ const ReviewEditor = () => {
           // 기존 이미지가 없거나 새글 작성할 시에 보여줄 이미지 업로드 기능
           <ImgFileUploader maxImages={3} onImagesChange={handleImagesChange} />
         )}
-
+        <Spacer size={spacerSize.lg} />
         <h4>리뷰 평점</h4>
         <p>
           <select

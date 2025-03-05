@@ -51,7 +51,8 @@ const Textarea = ({
         onChange={handleTextChange}
         onBlur={handleBlur}
         required
-        className={`w-full h-[${height}px] whitespace-pre-wrap px-3 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none ${textsize}`}
+        style={{ height: `${height}px` }} // 동적 높이 적용
+        className={`w-full min-w-[300px] sm:w-[100%] md:w-[600px] lg:w-[800px] min-h-[150px] whitespace-pre-wrap px-3 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none ${textsize}`}
       />
       <div className="flex justify-end text-gray-500">
         {inputCount}/{maxLength} 자
