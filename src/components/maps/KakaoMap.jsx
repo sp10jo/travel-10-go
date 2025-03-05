@@ -6,6 +6,7 @@ import useReviewStore from '../../zustand/reviewStore';
 import useRegionStore from '../../zustand/regionStore';
 import { motion } from 'framer-motion';
 import Button from '../common/Button';
+import { getCarDirection } from '../../api/kakaoMapAPI';
 
 const KakaoMap = () => {
   const DEFAULT_LAT = 33.450701;
@@ -64,6 +65,9 @@ const KakaoMap = () => {
     const ps = new window.kakao.maps.services.Places();
     const allMarkers = [];
 
+    /**
+     * 카카오맵 API를 이용해 선택한 지역/태그에 대응하는 장소 검색
+     */
     const searchMarkers = async () => {
       for (const category of selectedCategories) {
         const keyword = `${selectedRegion} ${category}`;
@@ -101,16 +105,19 @@ const KakaoMap = () => {
     searchMarkers();
   }, [map, selectedCategories, selectedRegion]);
 
+  /** 출발지 설정 */
   const handleSetStart = () => {
     setRouteInfo({ ...routeInfo, start: contextMenu.position });
     setContextMenu(null);
   };
 
+  /** 도착지 설정 */
   const handleSetEnd = () => {
     setRouteInfo({ ...routeInfo, end: contextMenu.position });
     setContextMenu(null);
   };
 
+  /** 경유지 추가 */
   const handleAddVia = () => {
     setRouteInfo({
       ...routeInfo,
@@ -119,85 +126,16 @@ const KakaoMap = () => {
     setContextMenu(null);
   };
 
-  const getCarDirection = async () => {
-    if (!routeInfo.start || !routeInfo.end) {
-      alert('출발지와 도착지를 설정해 주세요.');
-      return;
-    }
-
-    const origin = `${routeInfo.start.lng},${routeInfo.start.lat}`;
-    const destination = `${routeInfo.end.lng},${routeInfo.end.lat}`;
-    const viaPoints = routeInfo.via.map((via) => `${via.lng},${via.lat}`).join('|');
-
-    const headers = {
-      Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_REST_KEY}`,
-      'Content-Type': 'application/json',
-    };
-
-    // URL 쿼리 파라미터 생성(출발지, 도착지)
-    const queryParams = new URLSearchParams({
-      origin: origin,
-      destination: destination,
-      waypoints: viaPoints,
-    });
-
-    const requestUrl = `${import.meta.env.VITE_KAKAO_MOBILITY_URL}?${queryParams}`;
-
-    try {
-      const response = await fetch(requestUrl, {
-        method: 'GET',
-        headers: headers,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      let totalDistance = 0;
-      let totalDuration = 0;
-
-      data.routes[0].sections.forEach((section) => {
-        totalDistance += section.distance;
-        totalDuration += section.duration;
-      });
-
-      setRouteSummary({
-        distance: (totalDistance / 1000).toFixed(1), // km 변환
-        duration: Math.ceil(totalDuration / 60), // 분 변환
-      });
-
-      const linePath = [];
-      data.routes[0].sections.forEach((section) => {
-        section.roads.forEach((router) => {
-          router.vertexes.forEach((_vertex, index) => {
-            if (index % 2 === 0) {
-              linePath.push(new window.kakao.maps.LatLng(router.vertexes[index + 1], router.vertexes[index]));
-            }
-          });
-        });
-      });
-
-      if (polyline) {
-        polyline.setMap(null);
-      }
-
-      const newPolyline = new window.kakao.maps.Polyline({
-        path: linePath,
-        strokeWeight: 5,
-        strokeColor: 'green',
-        strokeOpacity: 0.7,
-        strokeStyle: 'solid',
-      });
-
-      newPolyline.setMap(map);
-      setPolyline(newPolyline);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  /** 자동차 경로 검색 */
+  const handleGetCarDirection = () => {
+    getCarDirection(routeInfo, setRouteSummary, setPolyline, map);
   };
 
+  /**
+   * 기본으로 제공되는 MapMarker에 우클릭 이벤트가 존재하지 않아
+   * 마커 생성 시 우클릭 이벤트 추가
+   * @param {Object} marker - 지도 마커 객체
+   */
   const handleMarkerCreate = (marker) => {
     window.kakao.maps.event.addListener(marker, 'rightclick', () => {
       const position = marker.getPosition();
@@ -210,6 +148,10 @@ const KakaoMap = () => {
     });
   };
 
+  /**
+   * 태그 선택 및 토글
+   * @param {string} category - 선택한 카테고리
+   */
   const handleCategorySelect = (category) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(category) ? prevSelected.filter((cat) => cat !== category) : [...prevSelected, category]
@@ -221,6 +163,7 @@ const KakaoMap = () => {
       <div className="absolute p-2 z-10 w-full rounded-lg">
         <div className="flex gap-3 w-full pb-1 mb-4">
           {categoryTags.map((category) => (
+            // framer-motion을 사용하여 UX 향상
             <motion.button
               key={category.id}
               onClick={() => handleCategorySelect(category.name)}
@@ -231,14 +174,14 @@ const KakaoMap = () => {
               }`}
               initial={{ scale: 1 }}
               animate={{ scale: selectedCategories.includes(category.name) ? 1.1 : 1 }}
-              transition={{ type: 'spring', stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }} // 전환 효과
             >
               {category.icon} {category.name}
             </motion.button>
           ))}
         </div>
 
-        <Button onClick={getCarDirection} bgcolor="transparentgray">
+        <Button onClick={handleGetCarDirection} bgcolor="transparentgray">
           경로 찾기
         </Button>
 
