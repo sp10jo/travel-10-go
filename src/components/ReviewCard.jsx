@@ -16,7 +16,9 @@ const ReviewCard = ({ review }) => {
   const avatarSrc = review.users.profile_img_path;
   const username = review.users.nickname;
   const content = `${review.content}`;
-  const footerText = review.places ? `${review.places.place_name} :: ${review.places.place_address}` : '장소 정보 없음';
+  const footerText = review.places
+    ? `📍${review.places.place_name} _ ${review.places.place_address}`
+    : '장소 정보 없음';
   //이미지데이터는 배열에 담겨서 넘어옴
   const imgArr = review.imgs;
 
@@ -36,14 +38,14 @@ const ReviewCard = ({ review }) => {
   const onDeleteClick = async () => {
     await deleteMutate.mutate(review.id);
   };
-
+  //bgcolor,textcolor,size
   return (
     <div
       onClick={(e) => {
         //카드안에서 발생하는 이벤트가 전달되지 않게하기위해 버블링 막기
         e.stopPropagation();
       }}
-      className={`bg-gray-200 rounded-md shadow-sm overflow-hidden m-4 w-[300px] h-[400px] flex flex-col`}
+      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[400px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
     >
       <div className="flex items-center justify-between p-3 bg-white">
         <div className="flex items-center">
@@ -52,18 +54,10 @@ const ReviewCard = ({ review }) => {
         </div>
         {isMyReview && (
           <div className="flex gap-1">
-            <Button
-              onClick={onEditClick}
-              bgcolor="blue"
-              className="px-2 py-0.5 bg-orange-400 rounded-md text-white text-sl"
-            >
+            <Button onClick={onEditClick} bgcolor="yellow" textcolor="white" size="1">
               수정
             </Button>
-            <Button
-              onClick={onDeleteClick}
-              bgcolor="yellow"
-              className="px-2 py-0.5 bg-green-500 rounded-md text-white text-sl"
-            >
+            <Button onClick={onDeleteClick} bgcolor="red" textcolor="white" size="1">
               삭제
             </Button>
           </div>
@@ -85,7 +79,7 @@ const ReviewCard = ({ review }) => {
       </div>
       <div className="pl-4 text-lg">{makeRationStar(review.star)}</div>
       {footerText && (
-        <div className="flex justify-between items-center p-3 bg-white">
+        <div className="flex justify-between items-center p-4 bg-reviewcard_pink rounded-md">
           <span className="text-red-500 text-sm">{footerText}</span>
         </div>
       )}

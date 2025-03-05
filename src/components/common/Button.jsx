@@ -1,30 +1,29 @@
 const Button = ({ onClick, children, type = 'button', size = 2, textcolor = 'black', bgcolor = 'white' }) => {
   const sizeClasses = {
-    1: 'px-2 py-1 text-sm', // 작은 사이즈
+    1: 'px-3 py-1.5 text-sm', // 작은 사이즈
     2: 'px-4 py-2 text-base', // 기본 사이즈
     3: 'px-6 py-3 text-lg', // 큰 사이즈
   };
   const bgClasses = {
-    blue: 'bg-blue-500 hover:bg-blue-700',
-    green: 'bg-green-500 hover:bg-green-700',
-    red: 'bg-red-500 hover:bg-red-700',
-    gray: 'bg-gray-500 hover:bg-gray-700',
-    yellow: 'bg-yellow-500 hover:bg-yellow-700',
-    black: 'bg-black hover:bg-gray-900',
-    white: 'bg-white hover:bg-gray-200',
+    skyblue: 'bg-skyblue hover:bg-[#F1F1FF] hover:text-skyblue',
+    green: 'bg-green hover:bg-[#EDFDE9] hover:text-green',
+    red: 'bg-button_red_delete hover:bg-[#FFE2E7] hover:text-button_red_delete',
+    gray: 'bg-gray hover:bg-[#D9D9D9] hover:text-gray',
+    yellow: 'bg-button_yellow_update hover:bg-[#FFF0DA] hover:text-button_yellow_update',
+    transparentgray: 'bg-lightgray hover:bg-[#D3D3D3]',
   };
 
   const textClass = {
     white: 'text-white',
     black: 'text-black',
-    blue: 'text-blue-500',
+    skyblue: 'text-blue-600',
   };
 
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`${sizeClasses[size]} ${textClass[textcolor]} border-t rounded ${bgClasses[bgcolor]} shadow-md`}
+      className={`${sizeClasses[size]} ${textClass[textcolor]} rounded ${bgClasses[bgcolor]} shadow-md`}
     >
       {children}
     </button>

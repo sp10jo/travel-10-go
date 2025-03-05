@@ -25,7 +25,7 @@ const MyReview = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       {reviews?.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 justify-center">
           {reviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}

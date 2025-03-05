@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import Avatar from '../components/common/Avatar'; // Avatar 추가
+import Avatar from '../components/common/Avatar';
 import useAuthStore from '../zustand/authStore';
 import { getUserByUUID, updateUser, uploadProfileImage } from '../api/supabaseUsersAPI';
 import { useQuery } from '@tanstack/react-query';
+import UserInput from '../components/user/UserInput';
+import UserConatiner from '../components/user/UserConatiner';
+import UserLabel from '../components/user/UserLabel';
+import Spacer from '../components/common/Spacer';
 
 const EditProfile = () => {
   const { user } = useAuthStore();
@@ -50,7 +54,15 @@ const EditProfile = () => {
   };
 
   const handleSaveProfile = async () => {
-    if (!user) return;
+    if (!newNickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    if (!newProfileImage && !previewImage) {
+      alert('프로필 이미지를 선택해주세요.');
+      return;
+    }
 
     let uploadedImagePath = userData?.profile_img_path || null;
 
@@ -86,10 +98,10 @@ const EditProfile = () => {
     alert('프로필이 수정되었습니다!');
   };
 
+  const MARGIN_SIZE = 40;
+
   return (
     <div className="flex flex-col items-center p-6">
-      <h2 className="text-xl font-bold mb-4">프로필 수정</h2>
-
       {/* 프로필 이미지 업로드 */}
       <div className="mb-4">
         <label className="cursor-pointer">
@@ -108,16 +120,20 @@ const EditProfile = () => {
       <span className="text-sm text-gray-500">이미지를 클릭하여 변경</span>
 
       {/* 닉네임 수정 가능하도록 변경 */}
-      <Input
-        type="text"
-        placeholder="변경할 닉네임을 입력해주세요."
-        value={newNickname}
-        onChange={(e) => setNewNickname(e.target.value)}
-        className="w-64 text-center text-xs"
-      />
+      <Spacer size={MARGIN_SIZE} />
+      <UserConatiner>
+        <UserLabel>닉네임</UserLabel>
+        <UserInput
+          type="text"
+          placeholder="변경할 닉네임을 입력해주세요."
+          value={newNickname}
+          onChange={(e) => setNewNickname(e.target.value)}
+          className="w-64 text-center text-xs"
+        />
+      </UserConatiner>
 
       {/* 저장 버튼 */}
-      <Button onClick={handleSaveProfile} className="mt-4 bg-green-500 text-white">
+      <Button onClick={handleSaveProfile} bgcolor="yellow" textcolor="white" size="2">
         수정하기
       </Button>
     </div>
