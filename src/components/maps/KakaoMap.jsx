@@ -6,6 +6,7 @@ import useReviewStore from '../../zustand/reviewStore';
 import useRegionStore from '../../zustand/regionStore';
 import { motion } from 'framer-motion';
 import Button from '../common/Button';
+import { getCarDirection } from '../../api/kakaoMapAPI';
 
 const KakaoMap = () => {
   const DEFAULT_LAT = 33.450701;
@@ -119,83 +120,8 @@ const KakaoMap = () => {
     setContextMenu(null);
   };
 
-  const getCarDirection = async () => {
-    if (!routeInfo.start || !routeInfo.end) {
-      alert('출발지와 도착지를 설정해 주세요.');
-      return;
-    }
-
-    const origin = `${routeInfo.start.lng},${routeInfo.start.lat}`;
-    const destination = `${routeInfo.end.lng},${routeInfo.end.lat}`;
-    const viaPoints = routeInfo.via.map((via) => `${via.lng},${via.lat}`).join('|');
-
-    const headers = {
-      Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_REST_KEY}`,
-      'Content-Type': 'application/json',
-    };
-
-    // URL 쿼리 파라미터 생성(출발지, 도착지)
-    const queryParams = new URLSearchParams({
-      origin: origin,
-      destination: destination,
-      waypoints: viaPoints,
-    });
-
-    const requestUrl = `${import.meta.env.VITE_KAKAO_MOBILITY_URL}?${queryParams}`;
-
-    try {
-      const response = await fetch(requestUrl, {
-        method: 'GET',
-        headers: headers,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      let totalDistance = 0;
-      let totalDuration = 0;
-
-      data.routes[0].sections.forEach((section) => {
-        totalDistance += section.distance;
-        totalDuration += section.duration;
-      });
-
-      setRouteSummary({
-        distance: (totalDistance / 1000).toFixed(1), // km 변환
-        duration: Math.ceil(totalDuration / 60), // 분 변환
-      });
-
-      const linePath = [];
-      data.routes[0].sections.forEach((section) => {
-        section.roads.forEach((router) => {
-          router.vertexes.forEach((_vertex, index) => {
-            if (index % 2 === 0) {
-              linePath.push(new window.kakao.maps.LatLng(router.vertexes[index + 1], router.vertexes[index]));
-            }
-          });
-        });
-      });
-
-      if (polyline) {
-        polyline.setMap(null);
-      }
-
-      const newPolyline = new window.kakao.maps.Polyline({
-        path: linePath,
-        strokeWeight: 5,
-        strokeColor: 'green',
-        strokeOpacity: 0.7,
-        strokeStyle: 'solid',
-      });
-
-      newPolyline.setMap(map);
-      setPolyline(newPolyline);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const handleGetCarDirection = () => {
+    getCarDirection(routeInfo, setRouteSummary, setPolyline, map);
   };
 
   const handleMarkerCreate = (marker) => {
@@ -238,7 +164,7 @@ const KakaoMap = () => {
           ))}
         </div>
 
-        <Button onClick={getCarDirection} bgcolor="transparentgray">
+        <Button onClick={handleGetCarDirection} bgcolor="transparentgray">
           경로 찾기
         </Button>
 
