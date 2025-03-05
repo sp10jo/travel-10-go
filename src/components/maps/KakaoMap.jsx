@@ -65,6 +65,9 @@ const KakaoMap = () => {
     const ps = new window.kakao.maps.services.Places();
     const allMarkers = [];
 
+    /**
+     * 카카오맵 API를 이용해 선택한 지역/태그에 대응하는 장소 검색
+     */
     const searchMarkers = async () => {
       for (const category of selectedCategories) {
         const keyword = `${selectedRegion} ${category}`;
@@ -102,16 +105,19 @@ const KakaoMap = () => {
     searchMarkers();
   }, [map, selectedCategories, selectedRegion]);
 
+  /** 출발지 설정 */
   const handleSetStart = () => {
     setRouteInfo({ ...routeInfo, start: contextMenu.position });
     setContextMenu(null);
   };
 
+  /** 도착지 설정 */
   const handleSetEnd = () => {
     setRouteInfo({ ...routeInfo, end: contextMenu.position });
     setContextMenu(null);
   };
 
+  /** 경유지 추가 */
   const handleAddVia = () => {
     setRouteInfo({
       ...routeInfo,
@@ -120,10 +126,16 @@ const KakaoMap = () => {
     setContextMenu(null);
   };
 
+  /** 자동차 경로 검색 */
   const handleGetCarDirection = () => {
     getCarDirection(routeInfo, setRouteSummary, setPolyline, map);
   };
 
+  /**
+   * 기본으로 제공되는 MapMarker에 우클릭 이벤트가 존재하지 않아
+   * 마커 생성 시 우클릭 이벤트 추가
+   * @param {Object} marker - 지도 마커 객체
+   */
   const handleMarkerCreate = (marker) => {
     window.kakao.maps.event.addListener(marker, 'rightclick', () => {
       const position = marker.getPosition();
@@ -136,6 +148,10 @@ const KakaoMap = () => {
     });
   };
 
+  /**
+   * 태그 선택 및 토글
+   * @param {string} category - 선택한 카테고리
+   */
   const handleCategorySelect = (category) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(category) ? prevSelected.filter((cat) => cat !== category) : [...prevSelected, category]
@@ -147,6 +163,7 @@ const KakaoMap = () => {
       <div className="absolute p-2 z-10 w-full rounded-lg">
         <div className="flex gap-3 w-full pb-1 mb-4">
           {categoryTags.map((category) => (
+            // framer-motion을 사용하여 UX 향상
             <motion.button
               key={category.id}
               onClick={() => handleCategorySelect(category.name)}
@@ -157,7 +174,7 @@ const KakaoMap = () => {
               }`}
               initial={{ scale: 1 }}
               animate={{ scale: selectedCategories.includes(category.name) ? 1.1 : 1 }}
-              transition={{ type: 'spring', stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }} // 전환 효과
             >
               {category.icon} {category.name}
             </motion.button>
