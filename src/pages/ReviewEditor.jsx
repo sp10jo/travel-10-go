@@ -168,7 +168,7 @@ const ReviewEditor = () => {
             onChange={(e) => setStar(e.target.value)}
             name="star"
             id="star"
-            className="border px-3 py-3 mb-10 border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+            className="border px-3 py-3 mb-10 border-lightgray rounded-lg outline-none focus:ring-2 focus:ring-skyblue resize-none text-sm"
             required
           >
             <option value="" disabled>

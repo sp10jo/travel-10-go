@@ -69,9 +69,9 @@ const ImgFileUploader = ({ maxImages = 3, onImagesChange }) => {
         {/* 추가 버튼 _ input으로 useRef로 연결 */}
         <div
           onClick={openFileSelector}
-          className="flex flex-col justify-center items-center border w-[100px] h-[100px] object-cover rounded-lg bg-white hover:bg-purple-100 transform transition-all duration-200 ease-in-out active:scale-110"
+          className="flex flex-col justify-center items-center border border-lightgray w-[100px] h-[100px] object-cover rounded-lg bg-white hover:bg-purple-100 transform transition-all duration-200 ease-in-out active:scale-110"
         >
-          <img draggable="false" src="/+.svg" className="w-1/2 h-1/2 text-gray-500 opacity-60" alt="camera icon" />
+          <img draggable="false" src="/+.svg" className="w-1/2 h-1/2 opacity-60" alt="camera icon" />
         </div>
         {/* 이미지 미리보기, 없을 시 기본 카메라 이미지 보여주기 */}
         {previewImgs.length > 0 ? (
@@ -81,20 +81,15 @@ const ImgFileUploader = ({ maxImages = 3, onImagesChange }) => {
               <button
                 type="button"
                 onClick={() => handleRemoveImage(index)}
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex justify-center items-center text-xl"
+                className="absolute top-0 right-0 bg-red text-white rounded-full w-5 h-5 flex justify-center items-center text-xl"
               >
                 &times;
               </button>
             </div>
           ))
         ) : (
-          <div className="flex justify-center items-center border w-[100px] h-[100px] object-cover rounded-lg bg-gray-100 ">
-            <img
-              draggable="false"
-              src="/camera.svg"
-              className="w-1/2 h-1/2 text-gray-500 opacity-30"
-              alt="camera icon"
-            />
+          <div className="flex border border-lightgray justify-center items-center border w-[100px] h-[100px] object-cover rounded-lg bg-lightgray ">
+            <img draggable="false" src="/camera.svg" className="w-1/2 h-1/2 text-gray opacity-30" alt="camera icon" />
           </div>
         )}
       </div>
