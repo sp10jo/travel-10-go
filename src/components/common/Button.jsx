@@ -10,11 +10,13 @@ const Button = ({ onClick, children, type = 'button', size = 2, textcolor = 'bla
     red: 'bg-button_red_delete hover:bg-[#FFE2E7] hover:text-button_red_delete',
     gray: 'bg-gray hover:bg-[#D9D9D9] hover:text-gray',
     yellow: 'bg-button_yellow_update hover:bg-[#FFF0DA] hover:text-button_yellow_update',
+    transparentgray: 'bg-lightgray hover:bg-[#D3D3D3]',
   };
 
   const textClass = {
     white: 'text-white',
     black: 'text-black',
+    skyblue: 'text-blue-600',
   };
 
   return (
