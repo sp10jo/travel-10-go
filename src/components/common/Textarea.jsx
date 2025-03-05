@@ -52,13 +52,13 @@ const Textarea = ({
         onBlur={handleBlur}
         required
         style={{ height: `${height}px` }} // 동적 높이 적용
-        className={`w-full min-w-[300px] sm:w-[100%] md:w-[600px] lg:w-[800px] min-h-[150px] whitespace-pre-wrap px-3 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none ${textsize}`}
+        className={`w-full min-w-[300px] sm:w-[100%] md:w-[600px] lg:w-[800px] min-h-[150px] whitespace-pre-wrap px-3 py-3 border border-lightgray rounded-lg outline-none focus:ring-2 focus:ring-skyblue resize-none ${textsize}`}
       />
-      <div className="flex justify-end text-gray-500">
+      <div className="flex justify-end text-gray">
         {inputCount}/{maxLength} 자
       </div>
       <div
-        className={`text-red-500 transition-opacity duration-500 ease-in-out mb-8 ${
+        className={`text-validation_red transition-opacity duration-500 ease-in-out mb-8 ${
           error ? 'opacity-100' : 'opacity-0'
         }`}
       >
