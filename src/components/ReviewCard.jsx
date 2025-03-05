@@ -45,7 +45,7 @@ const ReviewCard = ({ review }) => {
         //카드안에서 발생하는 이벤트가 전달되지 않게하기위해 버블링 막기
         e.stopPropagation();
       }}
-      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[450px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
+      className={`bg-white rounded-md overflow-hidden m-4 w-[300px] h-[470px] flex flex-col shadow-xl border-[#e8e7f1f] border-[1px]`}
     >
       <div className="flex items-center justify-between p-3 bg-white">
         <div className="flex items-center">
@@ -75,11 +75,11 @@ const ReviewCard = ({ review }) => {
         })}
       </div>
       <div className="flex-1 p-[10px]">
-        <p className="text-l break-words overflow-y-auto h-[90px]">{content}</p>
+        <p className="text-[18px] break-words overflow-y-auto h-[100px]">{content}</p>
       </div>
-      <div className="pl-4 text-lg">{makeRationStar(review.star)}</div>
+      <div className="pl-[10px] text-[17px]">{makeRationStar(review.star)}</div>
       {footerText && (
-        <div className="flex justify-between items-center p-4 bg-reviewcard_pink rounded-md">
+        <div className="flex justify-between items-center p-[13px] bg-reviewcard_pink rounded-md">
           <span className="text-red-500 text-sm">{footerText}</span>
         </div>
       )}
