@@ -45,6 +45,7 @@ const Header = () => {
             </Button>
             <Link to={'/my-page'}>
               {user?.profile_img_path && <Avatar src={user.profile_img_path} size={AVATAR_SIZE} />}
+              {user?.profile_img_path === null && <Avatar src={null} size={AVATAR_SIZE} />}
             </Link>
           </>
         )}
