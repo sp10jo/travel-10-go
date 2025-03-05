@@ -1,7 +1,5 @@
 import supabase from '../supabase/client';
 
-export const getUsers = async () => {};
-
 export const login = async ({ id, password }) => {
   // 로그인
   const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
@@ -28,7 +26,7 @@ export const logout = async () => {
   return { error };
 };
 
-export const registerUser = async ({ email, id, password, nickname, profile_img }) => {
+export const registerUser = async ({ email, id, password, nickname, img }) => {
   // 회원 가입
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
@@ -40,20 +38,22 @@ export const registerUser = async ({ email, id, password, nickname, profile_img 
   }
   // 프로필 이미지 저장
   let profile_img_path = null;
-  if (profile_img) {
-    const { data } = await uploadProfileImage(profile_img);
+  if (img) {
+    const { data } = await uploadProfileImage(img);
     profile_img_path = `${import.meta.env.VITE_APP_SUPABASE_URL}/storage/v1/object/public/profile-img/${data.path}`;
   }
   // 추가 정보 저장
   const { data: insertData, error: insertError } = await supabase
     .from('users')
-    .insert([{ id: signUpData.user.id, user_id: id, nickname, profile_img_path }]);
+    .insert([{ id: signUpData.user.id, user_id: id, nickname, profile_img_path }])
+    .select()
+    .maybeSingle();
 
   if (insertError) {
     return { user: null, error: insertError };
   }
 
-  return { user: insertData, error: null };
+  return { insertData, error: null, signUpData };
 };
 
 export const uploadProfileImage = async (img) => {
@@ -94,11 +94,7 @@ export const updateUser = async (userId, updatedData) => {
   }
 
   // 변경 사항이 있는 경우에만 업데이트 실행
-  const { data, error } = await supabase
-    .from('users')
-    .update(updatePayload)
-    .eq('id', userId)
-    .select('*');
+  const { data, error } = await supabase.from('users').update(updatePayload).eq('id', userId).select('*');
 
   if (error) {
     return { error };
